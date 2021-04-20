@@ -1,7 +1,7 @@
 //#include <mpi.h>
 #include <iostream>
 #include <string>
-#include <rarray>
+//#include <rarray>
 
 #include <H5Cpp.h>
 using namespace H5;

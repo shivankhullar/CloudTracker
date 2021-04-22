@@ -1,0 +1,2 @@
+module load gcc hdf5/1.8.21 rarray ddt
+module list

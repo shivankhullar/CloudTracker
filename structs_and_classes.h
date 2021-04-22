@@ -3,11 +3,14 @@
 
 #include <iostream>
 #include <string>
-#include <rarray>
+//#include <rarray>
 #include <vector>
 
 #include <H5Cpp.h>
 using namespace H5;
+
+int check_if_exists(std::vector<double> a, double b);
+int get_first_index(std::vector<double> a, double b);
 
 
 struct Group_struct{
@@ -39,6 +42,8 @@ public:
         std::string name;
         std::vector<double> particleIDs;
        	std::vector<double> masses;
+	std::vector<double> dummy_pIDs;
+	std::vector<double> dummy_masses;
         double total_mass;
         std::vector<ChildParentInstance> children;
         std::vector<ChildParentInstance> parents;

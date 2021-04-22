@@ -2,6 +2,26 @@
 #include <string>
 #include "matcher_functions.h"
 
+int check_if_exists(std::vector<double> a, double b)
+{
+        int c = 0;
+        for (int i=0; i<a.size(); i++)
+        {
+                if (a[i]==b) { c = c+1;}
+        }
+	return c;
+}
+
+int get_first_index(std::vector<double> a, double b)
+{
+        for (int i=0; i<a.size(); i++)
+        {
+                if (a[i]==b) { return i;}
+        }
+	return -1;
+}
+
+
 Group_struct* create_group(std::string name)
 {
         Group_struct *group = new Group_struct();
@@ -24,10 +44,18 @@ MemberCloud::MemberCloud(std::string name1, std::vector<double> pIDs, std::vecto
 	name = name1;
 	num_children = 0;
 	num_parents = 0;
-        for (int i=0; i<pIDs.size(); i++)
+	for (int i=0; i<pIDs.size(); i++)
         {
-        	particleIDs.push_back(pIDs[i]);
-                masses.push_back(masses1[i]);
+                if (check_if_exists(particleIDs, pIDs[i])==0)
+                {
+                        particleIDs.push_back(pIDs[i]);
+                        masses.push_back(masses1[i]);
+                }
+
+                else {
+                      	int index = get_first_index(particleIDs, pIDs[i]);
+                        masses[index] = masses[index] + masses1[i];
+                }
         }
         total_mass = sum_array(masses);
 }

@@ -33,7 +33,7 @@ Group_struct* create_group(std::string name)
 ChildParentInstance::ChildParentInstance(std::string name1, double parents_mass_frac_to_child1, double childs_mass_frac_from_parent1, double total_mass1)
 {
 	name = name1;
-	parents_mass_frac_to_child = parents_mass_frac_to_child;
+	parents_mass_frac_to_child = parents_mass_frac_to_child1;
 	childs_mass_frac_from_parent = childs_mass_frac_from_parent1;
 	total_mass = total_mass1;
 }

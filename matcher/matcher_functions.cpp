@@ -47,6 +47,7 @@ void write_to_hdf5_file(CitySnaps snapsnap, Params &params, int parent_num_cloud
 
 			H5::DataSet dataset_parent2 = child_data.createDataSet("parents_mass_frac_to_child", datatype, dataspace );
 			double value2 = snapsnap.parent_group.members[i].children[j].parents_mass_frac_to_child;
+			std::cout << "While writing, parents mass frac to child: " << value2 << ", " << snapsnap.parent_group.members[i].children[j].parents_mass_frac_to_child << std::endl;
 			dataset_parent2.write(&value2, H5::PredType::IEEE_F64LE);
 
 			H5::DataSet dataset_parent1 = child_data.createDataSet("childs_mass_frac_from_parent", datatype, dataspace );
@@ -82,6 +83,7 @@ void write_to_hdf5_file(CitySnaps snapsnap, Params &params, int parent_num_cloud
 			
 			H5::DataSet dataset_child2 = parents_data.createDataSet("parents_mass_frac_to_child", datatype, dataspace );
                         double value2 = snapsnap.child_group.members[i].parents[j].parents_mass_frac_to_child;
+			std::cout << "While writing child_group clouds, parents mass frac to child: " << value2 << ", " << std::endl;
                         dataset_child2.write(&value2, H5::PredType::IEEE_F64LE);
 			
 			H5::DataSet dataset_child3 = parents_data.createDataSet("parent_total_mass", datatype, dataspace );
@@ -264,6 +266,7 @@ void mass_frac(std::vector<double> parent_pIDs, std::vector<double> child_pIDs, 
         }
         childs_mass_frac_from_parent = sum_array(store_child_masses) / sum_array(child_masses);
         parents_mass_frac_to_child = sum_array(store_parent_masses) / sum_array(parent_masses);
+	std::cout << "Parents mass frac to child: " << parents_mass_frac_to_child << std::endl;
 	if (childs_mass_frac_from_parent >=1 || parents_mass_frac_to_child>=1)
 	{
 		std::cout << "Store parent masses:" << store_parent_masses.size() << " " << num_common_particles << " " << parent_masses.size() << std::endl;

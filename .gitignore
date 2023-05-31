@@ -1,0 +1,15 @@
+matcher/*.o
+linker/*.o
+b20_method/
+sample_data/
+matcher/*.out
+linker/*.out
+*.out
+*.o
+*~
+*.cpp
+*.save
+*.h5
+*.dat
+matcher/matcher
+linker/linker

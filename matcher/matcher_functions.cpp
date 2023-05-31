@@ -287,9 +287,9 @@ std::string get_cloud_name(int i, Params &params)
 {
         std::string cloud_name;
         // customize this part below based on how many clouds there are.
-        if (i<10) { cloud_name = params.cloud_prefix + "00"+ std::to_string(i);}
-        else if (i>=10 & i<100) { cloud_name = params.cloud_prefix + "0"+ std::to_string(i);}
-        else if (i>=100 & i<1000) { cloud_name = params.cloud_prefix + std::to_string(i);}
+        if (i<10) { cloud_name = params.cloud_prefix + "000"+ std::to_string(i);}
+        else if (i>=10 & i<100) { cloud_name = params.cloud_prefix + "00"+ std::to_string(i);}
+        else if (i>=100 & i<1000) { cloud_name = params.cloud_prefix + "0"+ std::to_string(i);}
         else { cloud_name = params.cloud_prefix + std::to_string(i);}
 	// std::cout << "Make sure to modify the get_cloud_name() function correctly." << std::endl;
         return cloud_name;

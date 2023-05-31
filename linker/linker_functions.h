@@ -24,7 +24,7 @@ herr_t child_info(hid_t loc_id, const char *name, const H5L_info_t *linfo, void 
 void get_child_list(Params &params, int snap_num, std::string cloud_name, std::vector<std::string> &child_list_names, std::vector<double> &child_list_fracs);
 void load_to_cloudlist(std::vector<CloudStruct> &cloud_list, CloudStruct &cloud);
 void load_to_tracked_cloud_list(std::vector<std::vector<CloudStruct>> &tracked_cloud_list, CloudStruct &cloud, std::string key, int index);
-int find_proper_child(std::vector<std::string> &child_list_names, std::vector<double> &child_list_fracs, std::vector<CloudStruct> &cloud_list, int index_to_omit);
+int find_proper_child(std::vector<std::string> &child_list_names, std::vector<double> &child_list_fracs, std::vector<CloudStruct> &cloud_list, int index_to_omit, Params &params);
 int check_if_cloud_exists_in_list(CloudStruct &cloud, std::vector<CloudStruct> &cloud_list);
 void print_list(std::vector<std::vector<CloudStruct>> &tracked_cloud_list);
 void write_to_file(std::vector<std::vector<CloudStruct>> &tracked_cloud_list, Params &params, std::string field_name);

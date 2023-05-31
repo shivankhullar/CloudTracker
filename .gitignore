@@ -13,3 +13,4 @@ linker/*.out
 *.dat
 matcher/matcher
 linker/linker
+test_matcher/

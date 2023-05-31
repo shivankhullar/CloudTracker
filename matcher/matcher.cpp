@@ -1,3 +1,11 @@
+/// @file matcher.cpp 
+/// @brief 	This is the main driver of the matcher application. Its purpose is to match the particles
+///		among different cloud entities. 
+
+/// @author Shivan Khullar
+/// @date May 2021
+
+
 //#include <mpi.h>
 #include <iostream>
 #include <string>
@@ -8,18 +16,40 @@ using namespace H5;
 
 #include "structs_and_classes.h"
 #include "matcher_functions.h"
+//#include "read_params.h"
 
+//#include <boost/program_options.hpp>
+//namespace po = boost::program_options;
 
-int main()
+/// @brief	Main driver. Calls the 'matcher' function after reading in the parameters. Reads in the params.ini config file and
+///		assigns parameters to the code variables.
+int main(int ac, char** av)
 {
+	// File to read for parameters.
+//        std::string filename = "params.ini";
+//        std::ifstream ifs(filename);
+
+        // Using the boost library for parsing config files.
+
+//        po::variables_map vm = read_params_file(ifs, filename);         // Read the variables from file
+//        po::variables_map vm2 = read_cmd_line(ac, av, filename);        // Arguments can be parsed through command line too. Useful for ./exec --help.
+
+        // Print out help message for the parameters if ./exec --help is used.
+//        po::options_description desc = get_options_description(filename);	// Get the description of all the defined parameters.
+//        if (vm2.count("help")) {
+//                std::cout << desc << "\n";
+//                return 1;
+//        }
+
+
 	Params params;
-	params.first_snap = 590; params.last_snap = 600;
+	params.first_snap = 591; params.last_snap = 614;
 	params.cloud_prefix = "Cloud";
 	params.dat_filename_base_prefix = "bound_";
 	params.dat_filename_base_suffix = "_n10_alpha2.dat";
 	params.filename_base_prefix = "Clouds_";
 	params.filename_base_suffix = "_n10_alpha2.hdf5";
-	params.path = "../sample_data/";
+	params.path = "../sample_data/m12i_no_fb_3/n10_alpha2/";
 	params.file_arch_root = "/";
 	params.file_arch_cloud_subgroup = "PartType0";
 	params.file_arch_masses_field = "Masses";
@@ -29,19 +59,3 @@ int main()
 	params.particle_lower_limit = 32;
 	matcher(params);
 }
-
-
-
-	//CitySnaps snapsnap(590,591);
-	//std::vector<int> pIDs = {10,10,12,14}; 
-	//MemberCloud snapcloud("Cloud019", pIDs);	
-	//std::cout << snapsnap.snap_num1 <<  " " << snapsnap.snap_name1 << std::endl;
-	//std::cout << "Hi" << std::endl;
-	//std::cout << snapcloud.name << " " << snapcloud.particleIDs[2] << std::endl;
-	//snapsnap.parent_group.add_member(snapcloud);
-	//std::cout << snapsnap.parent_group.members[0].name << " " << snapsnap.parent_group.members[0].particleIDs[2] << std::endl;
-	//std::vector<int> pIDs1 = {10,10,22,14};
-        //MemberCloud snapcloud1("Cloud020", pIDs1);
-	//snapsnap.child_group.add_member(snapcloud1);
-        //std::cout << snapsnap.child_group.members.size() << " "<< snapsnap.child_group.members[0].name << " " << snapsnap.child_group.members[0].particleIDs[2] << std::endl;
-	

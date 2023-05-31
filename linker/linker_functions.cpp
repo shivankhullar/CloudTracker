@@ -23,9 +23,9 @@ std::string get_cloud_name(int i, Params &params)
 {
         std::string cloud_name;
         // customize this part below based on how many clouds there are.
-        if (i<10) { cloud_name = params.cloud_prefix + "00"+ std::to_string(i);}
-        else if (i>=10 & i<100) { cloud_name = params.cloud_prefix + "0"+ std::to_string(i);}
-        else if (i>=100 & i<1000) { cloud_name = params.cloud_prefix + std::to_string(i);}
+        if (i<10) { cloud_name = params.cloud_prefix + "000"+ std::to_string(i);}
+        else if (i>=10 & i<100) { cloud_name = params.cloud_prefix + "00"+ std::to_string(i);}
+        else if (i>=100 & i<1000) { cloud_name = params.cloud_prefix + "0"+std::to_string(i);}
         else { cloud_name = params.cloud_prefix + std::to_string(i);}
         // std::cout << "Make sure to modify the get_cloud_name() function correctly." << std::endl;
         return cloud_name;
@@ -238,27 +238,33 @@ void load_to_tracked_cloud_list(std::vector<std::vector<CloudStruct>> &tracked_c
 }
 
 int find_proper_child(std::vector<std::string> &child_list_names, std::vector<double> &child_list_fracs,
-                        std::vector<CloudStruct> &cloud_list, int index_to_omit)
+                        std::vector<CloudStruct> &cloud_list, int index_to_omit, Params &params)
 {
         if (child_list_fracs.size()==0) {return -1;}
 
         std::vector<double> v;
         std::vector<std::string> u;
+	std::vector<int> inds;
         for (int i=0; i<child_list_fracs.size(); i++)
         {
                 if (i==index_to_omit) { continue;}
+		if (child_list_fracs[i] < params.threshold_frac_for_child) {continue;}
                 v.push_back(child_list_fracs[i]);
                 u.push_back(child_list_names[i]);
+		inds.push_back(i);
         }
+
+	if (v.size()==0) {return -1;}
 	std::vector<double>::iterator result;
         result = std::max_element(v.begin(), v.end());
-        int index = std::distance(v.begin(), result);
+        int dummy_index = std::distance(v.begin(), result);
+	int index = inds[dummy_index];
         for (int i=0; i<cloud_list.size(); i++)
         {
                 if (cloud_list[i].final_name.compare(child_list_names[index])==0)
                 {
                         std::cout << "Child cloud: " << child_list_names[index] << " has already been assigned to a chain." << std::endl;
-                        find_proper_child(u, v, cloud_list, index);
+                        find_proper_child(u, v, cloud_list, index, params);
                 }
         }
 	return index;
@@ -379,7 +385,7 @@ void linker(Params &params)
                         {
                                 std::cout << "Child " << k << " is " << child_list_names[k] << " with " << child_list_fracs[k] << std::endl;
                         }
-                        int index = find_proper_child(child_list_names, child_list_fracs, cloud_list, -1);
+                        int index = find_proper_child(child_list_names, child_list_fracs, cloud_list, -1, params);
                         if (index!=-1) {
                         std::cout << "Proper child is: " << child_list_names[index] << ", Frac: " << child_list_fracs[index] << std::endl;}
 			// Step 3 and 4.
@@ -387,6 +393,8 @@ void linker(Params &params)
                         else
                         {
                                 CloudStruct child_cloud = initialize_cloud(snap_num+1, child_list_names[index], params);
+				int status = check_if_cloud_exists_in_list(child_cloud, cloud_list);
+				if (status==1) {continue;}
                                 load_to_cloudlist(cloud_list, child_cloud);
                                 load_to_tracked_cloud_list(tracked_cloud_list, child_cloud, "nth_gen", j);
                         }

@@ -14,10 +14,10 @@ using namespace std;
 int main(int argc, char* argv[])
 {
 	Params params;
-        params.first_snap = 601; params.last_snap = 614;
+        params.first_snap = 591; params.last_snap = 614;
         string name;
-	name = "n10_alpha2";
-	params.path = "../sample_data/m12i_no_fb_3/"+name+"/";
+	name = "n10_alpha10";
+	params.path = "../../m12i_res57000_nofb/CloudPhinderData/"+name+"/";
         params.cloud_prefix = "Cloud";
         params.dat_filename_base_prefix = "bound_";
         params.dat_filename_base_suffix = "_"+name+".dat";
@@ -30,7 +30,7 @@ int main(int argc, char* argv[])
         params.write_filename_base_prefix = "Tracked_Clouds_";
         params.write_filename_base_suffix = "_"+name+".hdf5";
         params.particle_lower_limit = 32;
-	params.threshold_frac_for_child=0.75;
-	params.linker_output_filename_prefix = "Linked_Clouds_"+name+"_thresh0.75_";
+	params.threshold_frac_for_child=0.0;
+	params.linker_output_filename_prefix = "Linked_Clouds_"+name+"_thresh0.0_";
 	linker(params);
 }

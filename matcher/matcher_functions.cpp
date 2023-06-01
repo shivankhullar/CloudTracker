@@ -4,8 +4,19 @@
 #include <H5Cpp.h>
 using namespace H5;
 
+
+/// @brief	Matches clouds between two snapshots.
+/// @param	params		Parameters for the code.
+
+
+/// @brief     Writes the tracked clouds to an hdf5 file.
+/// @param snapsnap : The structure containing the matched clouds.
+/// @param params : The parameters for the code.
+/// @param parent_num_clouds : The number of parent clouds.
+/// @param child_num_clouds : The number of child clouds.
 void write_to_hdf5_file(CitySnaps snapsnap, Params &params, int parent_num_clouds, int child_num_clouds)
 {
+        // file name
 	H5std_string fname = params.path+params.write_filename_base_prefix + get_snapshot_name(snapsnap.snap_num1) + "_" +
 				get_snapshot_name(snapsnap.snap_num2) + params.write_filename_base_suffix;
 
@@ -15,6 +26,8 @@ void write_to_hdf5_file(CitySnaps snapsnap, Params &params, int parent_num_cloud
 	std::cout << "=======================" <<std::endl;
 	std::cout << "=======================" <<std::endl;
 	
+
+        // Create the hdf5 file
 	hsize_t dimsf[1]; int rank = 1; dimsf[0] = 1;
 	H5::H5File file_out(fname, H5F_ACC_TRUNC);
 	H5std_string parent_group_name = "parent_group";
@@ -22,9 +35,11 @@ void write_to_hdf5_file(CitySnaps snapsnap, Params &params, int parent_num_cloud
 	H5std_string parent_group_subgroup_name = "children";
 	H5std_string child_group_subgroup_name = "parents";
 
+        // Create the groups
 	H5::Group parent_group = file_out.createGroup(parent_group_name);
 	H5::Group child_group = file_out.createGroup(child_group_name);	
 
+        // Write the datasets in the parent group
 	for (int i=0; i<parent_num_clouds; i++)
 	{
 		H5::Group cloud_data_parent = parent_group.createGroup(snapsnap.parent_group.members[i].name);
@@ -45,6 +60,7 @@ void write_to_hdf5_file(CitySnaps snapsnap, Params &params, int parent_num_cloud
 			//H5::DataSpace dataspace( rank, dimsf);
 			//H5::DataType datatype (H5T_IEEE_F64LE);
 
+                        // Write the three datasets: parents_mass_frac_to_child, childs_mass_frac_from_parent, child_total_mass
 			H5::DataSet dataset_parent2 = child_data.createDataSet("parents_mass_frac_to_child", datatype, dataspace );
 			double value2 = snapsnap.parent_group.members[i].children[j].parents_mass_frac_to_child;
 			std::cout << "While writing, parents mass frac to child: " << value2 << ", " << snapsnap.parent_group.members[i].children[j].parents_mass_frac_to_child << std::endl;
@@ -60,6 +76,7 @@ void write_to_hdf5_file(CitySnaps snapsnap, Params &params, int parent_num_cloud
 		}
 	}
 
+        // Write the datasets in the child group
 	for (int i=0; i<child_num_clouds; i++) 
 	{
 		H5::Group cloud_data_child = child_group.createGroup(snapsnap.child_group.members[i].name);
@@ -70,6 +87,7 @@ void write_to_hdf5_file(CitySnaps snapsnap, Params &params, int parent_num_cloud
                 dataset_child.write(&value, H5::PredType::IEEE_F64LE);
 		H5::Group parents = cloud_data_child.createGroup(child_group_subgroup_name);
 
+                // Write the datasets in the child group
                 for (int j=0; j<snapsnap.child_group.members[i].num_parents; j++)
                 {
 			//H5::Group parents = cloud_data_child.createGroup(child_group_subgroup_name);
@@ -77,6 +95,7 @@ void write_to_hdf5_file(CitySnaps snapsnap, Params &params, int parent_num_cloud
                         //H5::DataSpace dataspace( rank, dimsf);
                         //H5::DataType datatype (H5T_IEEE_F64LE);
                         
+                        // Write the three datasets: parents_mass_frac_to_child, childs_mass_frac_from_parent, parent_total_mass
 			H5::DataSet dataset_child1 = parents_data.createDataSet("childs_mass_frac_from_parent", datatype, dataspace );
                         double value1 = snapsnap.child_group.members[i].parents[j].childs_mass_frac_from_parent;
 			dataset_child1.write(&value1, H5::PredType::IEEE_F64LE);
@@ -94,6 +113,8 @@ void write_to_hdf5_file(CitySnaps snapsnap, Params &params, int parent_num_cloud
 	
 }
 
+/// @brief Function to print a double array
+/// @param a : the array to be printed
 void print_array_double(std::vector<double> a)
 {
         for (int i = 0; i<a.size(); i++)
@@ -102,6 +123,8 @@ void print_array_double(std::vector<double> a)
         }
 }
 
+/// @brief Function to print an int array
+/// @param a : the array to be printed
 void print_array_int(std::vector<int> a)
 {
         for (int i = 0; i<a.size(); i++)
@@ -110,7 +133,10 @@ void print_array_int(std::vector<int> a)
         }
 }
 
-
+/// @brief Function to get the last group in the subgroup struct
+/// @param subgroup_struct 
+/// @param group 
+/// @return 
 H5::Group get_last_group(Group_struct *subgroup_struct, H5::Group group)
 {
         if (subgroup_struct->subgroup!=NULL)
@@ -132,6 +158,8 @@ H5::Group get_last_group(Group_struct *subgroup_struct, H5::Group group)
         //return grp1;
 }
 
+/// @brief Function to get the name of the snapshot part of a Cloud
+/// @param i : the snapshot number
 std::string get_snapshot_name(int i)
 {
 	std::string name;

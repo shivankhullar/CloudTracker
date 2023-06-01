@@ -1,8 +1,5 @@
 #
-# Makefile for antsontable I/O module
-#
-# This is a start only; you should edit this Makefile such that it is
-# able to run all test using 'make test'.
+# Makefile for linker module
 #
 # Type 'make help' for usage.
 #
@@ -11,39 +8,97 @@
 # Some of these variables do not need to be set, but are
 # included here for completeness.
 
+
+
+## read the systype information to use the blocks below for different machines
+ifdef SYSTYPE
+SYSTYPE := "$(SYSTYPE)"
+-include ../Makefile.systype
+else
+include ../Makefile.systype
+endif
+
+ifeq ($(wildcard Makefile.systype), ../Makefile.systype)
+INCL = ../Makefile.systype
+else
+INCL =
+endif
+FINCL =
+
+#------------------------------------------------------------
+ifeq ($(SYSTYPE),"Mac")
+
+CXX = g++
+CPPFLAGS =
+CXXFLAGS = -std=c++14 -O3 -g -march=native
+HDF5_INC = /usr/local/Cellar/hdf5/1.14.1/include
+HDF5_LIB = 
+#/usr/local/Cellar/hdf5/1.14.1/lib
+LDFLAGS = 
+#-g
+LDLIBS = -lhdf5 -lz
+MACOSX_DEPLOYMENT_TARGET=13.0
+#-lnetcdf_c++4 -lfftw3
+
+export MACOSX_DEPLOYMENT_TARGET := ${MACOSX_DEPLOYMENT_TARGET}
+
+endif
+#------------------------------------------------------------
+
+
+#------------------------------------------------------------
+ifeq ($(SYSTYPE),"Niagara")
+
 CXX = g++
 CPPFLAGS =
 CXXFLAGS = -std=c++14 -O3 -g -march=native
 HDF5_INC = ${SCINET_HDF5_ROOT}/include
-HDF5_LIB = ${SCINET_HDF5_ROOT}/lib
+#need to include -L here itself
+HDF5_LIB = -L${SCINET_HDF5_ROOT}/lib
 
 LDFLAGS = -g
 LDLIBS = -lhdf5 -lz
+endif
+#------------------------------------------------------------
+
+#------------------------------------------------------------
+ifeq ($(SYSTYPE),"CITA")
+
+CXX = g++
+CPPFLAGS =
+CXXFLAGS = -std=c++14 -O3 -g -march=native
+HDF5_INC = 
+#${SCINET_HDF5_ROOT}/include
+HDF5_LIB = -L
+#${SCINET_HDF5_ROOT}/lib
+
+LDFLAGS = -g
+LDLIBS = -lhdf5 -lz
+endif
+#------------------------------------------------------------
+
 #-lnetcdf_c++4 -lfftw3
 
 ## all: build everything
 all: linker
 
-## gwaves: Run the application 'gwaves'
+## gwaves: Run the linker application
 linker: linker.o linker_functions.o linker_structs.o
-	${CXX} -I${HDF5_INC} -L${HDF5_LIB} ${LDFLAGS} $^ -o $@ ${LDLIBS}
+	${CXX} -I${HDF5_INC} ${HDF5_LIB} ${LDFLAGS} $^ -o $@ ${LDLIBS}
 
 linker.o: linker.cpp
-	${CXX} ${CPPFLAGS} ${CXXFLAGS} -I${HDF5_INC} -L${HDF5_LIB} ${LDFLAGS} -c -o $@ $^
+	${CXX} ${CPPFLAGS} ${CXXFLAGS} -I${HDF5_INC} ${HDF5_LIB} ${LDFLAGS} -c -o $@ $^
 
 linker_functions.o: linker_functions.cpp linker_functions.h
-	${CXX} ${CPPFLAGS} ${CXXFLAGS} -I${HDF5_INC} -L${HDF5_LIB} ${LDFLAGS} -c -o linker_functions.o linker_functions.cpp
+	${CXX} ${CPPFLAGS} ${CXXFLAGS} -I${HDF5_INC} ${HDF5_LIB} ${LDFLAGS} -c -o linker_functions.o linker_functions.cpp
 
 linker_structs.o: linker_structs.cpp linker_structs.h
-	${CXX} ${CPPFLAGS} ${CXXFLAGS} -I${HDF5_INC} -L${HDF5_LIB} ${LDFLAGS} -c -o linker_structs.o linker_structs.cpp
+	${CXX} ${CPPFLAGS} ${CXXFLAGS} -I${HDF5_INC} ${HDF5_LIB} ${LDFLAGS} -c -o linker_structs.o linker_structs.cpp
 
-## run: Run the GW Match Filtered Algorithm program
+## run: Run the linker program
 run:
 	./linker > output.dat
 
-## result: Generate the results from a python script.
-result: generate_results.py
-	python generate_results.py
 
 ## clean: remove intermediate generated files
 clean:

@@ -14,10 +14,10 @@ using namespace std;
 int main(int argc, char* argv[])
 {
 	Params params;
-        params.first_snap = 591; params.last_snap = 614;
+        params.first_snap = 601; params.last_snap = 614;
         string name;
-	name = "n10_alpha10";
-	params.path = "../../m12i_res57000_nofb/CloudPhinderData/"+name+"/";
+	name = "n10_alpha5";
+	params.path = "../../m12i_restart_2/CloudPhinderData/"+name+"/";
         params.cloud_prefix = "Cloud";
         params.dat_filename_base_prefix = "bound_";
         params.dat_filename_base_suffix = "_"+name+".dat";

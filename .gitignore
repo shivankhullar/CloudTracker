@@ -7,7 +7,7 @@ linker/*.out
 *.out
 *.o
 *~
-*.cpp
+linker/dummy.cpp
 *.save
 *.h5
 *.dat

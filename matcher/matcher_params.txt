@@ -1,4 +1,4 @@
-path= ../../m12i_res57000_nofb/CloudPhinderData/
+path= ../../
 first_snap = 591
 last_snap = 614
 cloud_prefix = Cloud

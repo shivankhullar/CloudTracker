@@ -30,14 +30,15 @@ using namespace std;
 int main(int argc, char** argv)
 {
 
-	if (argc != 3) {
-        std::cerr << "Usage: " << argv[0] << " <config_filename> <name>" << std::endl;
+	if (argc != 4) {
+        std::cerr << "Usage: " << argv[0] << " <config_filename> <name> <sim_name>" << std::endl;
         return 1;
     }
 
     Params params;
     std::string name = argv[2];
-    if (!parseParams(argv[1], params, name)) {
+	std::string sim_name = argv[3];
+    if (!parseParams(argv[1], params, name, sim_name)) {
         return 1;
     }
 

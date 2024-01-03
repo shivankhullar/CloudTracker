@@ -12,6 +12,6 @@
 
 void trim(std::string& s);
 void printParams(const Params& params);
-bool parseParams(const std::string& filename, Params& params, const std::string& name);
+bool parseParams(const std::string& filename, Params& params, const std::string& name, const std::string& sim_name);
 
 #endif

@@ -33,7 +33,7 @@ void printParams(const Params& params) {
 }
 
 
-bool parseParams(const std::string& filename, Params& params, const std::string& name) {
+bool parseParams(const std::string& filename, Params& params, const std::string& name, const std::string& sim_name) {
     std::ifstream file(filename);
     if (!file.is_open()) {
         std::cerr << "Unable to open file: " << filename << std::endl;
@@ -48,7 +48,7 @@ bool parseParams(const std::string& filename, Params& params, const std::string&
             trim(key);
             trim(value);
 
-            if (key == "path") params.path = value + name + "/";
+            if (key == "path") params.path = value + sim_name + "/CloudPhinderData/" + name + "/";
             else if (key == "first_snap") params.first_snap = std::stoi(value);
             else if (key == "last_snap") params.last_snap = std::stoi(value);
             else if (key == "cloud_prefix") params.cloud_prefix = value;

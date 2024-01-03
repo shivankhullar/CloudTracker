@@ -32,10 +32,10 @@ CXX = h5c++
 #g++
 CPPFLAGS =
 CXXFLAGS = -std=c++14 -O3 -g -march=native
-#CXXFLAGS+= -mmacosx-version-min=13.0
+#CXXFLAGS+= -mmacosx-version-min=14.0
 LDFLAGS = -g
 LDLIBS = 
-MACOSX_DEPLOYMENT_TARGET=13.0
+MACOSX_DEPLOYMENT_TARGET=14.0
 #-lnetcdf_c++4 -lfftw3
 
 export MACOSX_DEPLOYMENT_TARGET := ${MACOSX_DEPLOYMENT_TARGET}
@@ -73,7 +73,7 @@ all: matcher
 
 
 ## matcher: Run the application 'matcher'
-matcher: matcher.o matcher_functions.o structs_and_classes.o
+matcher: matcher.o matcher_functions.o structs_and_classes.o read_params.o
 	${CXX} ${LDFLAGS} $^ -o $@ ${LDLIBS}
 
 matcher.o: matcher.cpp
@@ -85,6 +85,9 @@ matcher_functions.o: matcher_functions.cpp matcher_functions.h
 structs_and_classes.o: structs_and_classes.cpp structs_and_classes.h
 	${CXX} ${CPPFLAGS} ${CXXFLAGS} ${LDFLAGS} -c -o structs_and_classes.o structs_and_classes.cpp
 
+read_params.o: read_params.cpp read_params.h
+	${CXX} ${CPPFLAGS} ${CXXFLAGS} ${LDFLAGS} -c -o read_params.o read_params.cpp
+
 ## run: Run the matcher program
 run:
 	./matcher > output.dat
@@ -92,7 +95,7 @@ run:
 
 ## clean: remove intermediate generated files
 clean:
-	$(RM) matcher output.dat matcher.o matcher_functions.o structs_and_classes.o 
+	$(RM) matcher output.dat matcher.o matcher_functions.o structs_and_classes.o read_params.o
 
 ## help: print all commented 'make' targets
 # (the sed command displays all lines from the Makefile that start with '##')

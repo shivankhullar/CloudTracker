@@ -16,8 +16,8 @@ int main(int argc, char* argv[])
 	Params params;
         params.first_snap = 601; params.last_snap = 614;
         string name;
-	name = "n10_alpha5";
-	params.path = "../../m12i_restart_2/CloudPhinderData/"+name+"/";
+	name = "n10_alpha2";
+	params.path = "../../m12i_no_fb_3/CloudPhinderData/"+name+"/";
         params.cloud_prefix = "Cloud";
         params.dat_filename_base_prefix = "bound_";
         params.dat_filename_base_suffix = "_"+name+".dat";

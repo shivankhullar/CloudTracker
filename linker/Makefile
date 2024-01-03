@@ -37,7 +37,7 @@ HDF5_LIB =
 LDFLAGS = 
 #-g
 LDLIBS = -lhdf5 -lz
-MACOSX_DEPLOYMENT_TARGET=13.0
+MACOSX_DEPLOYMENT_TARGET=14.0
 #-lnetcdf_c++4 -lfftw3
 
 export MACOSX_DEPLOYMENT_TARGET := ${MACOSX_DEPLOYMENT_TARGET}
@@ -83,7 +83,7 @@ endif
 all: linker
 
 ## gwaves: Run the linker application
-linker: linker.o linker_functions.o linker_structs.o
+linker: linker.o linker_functions.o linker_structs.o read_params.o
 	${CXX} -I${HDF5_INC} ${HDF5_LIB} ${LDFLAGS} $^ -o $@ ${LDLIBS}
 
 linker.o: linker.cpp
@@ -94,6 +94,9 @@ linker_functions.o: linker_functions.cpp linker_functions.h
 
 linker_structs.o: linker_structs.cpp linker_structs.h
 	${CXX} ${CPPFLAGS} ${CXXFLAGS} -I${HDF5_INC} ${HDF5_LIB} ${LDFLAGS} -c -o linker_structs.o linker_structs.cpp
+
+read_params.o: read_params.cpp read_params.h
+	${CXX} ${CPPFLAGS} ${CXXFLAGS} -I${HDF5_INC} ${HDF5_LIB} ${LDFLAGS} -c -o read_params.o read_params.cpp
 
 ## run: Run the linker program
 run:

@@ -31,10 +31,12 @@ void printParams(const Params& params) {
     std::cout << "Write Filename Base Prefix: " << params.write_filename_base_prefix << std::endl;
     std::cout << "Write Filename Base Suffix: " << params.write_filename_base_suffix << std::endl;
     std::cout << "Particle Lower Limit: " << params.particle_lower_limit << std::endl;
+    std::cout << "Threshold Frac For Child: " << params.threshold_frac_for_child << std::endl;
+    std::cout << "Linker Output Filename Prefix: " << params.linker_output_filename_prefix << std::endl;
 }
 
 
-bool parseParams(const std::string& filename, Params& params, const std::string& name) {
+bool parseParams(const std::string& filename, Params& params, const std::string& name, const std::string& sim_name) {
     std::ifstream file(filename);
     if (!file.is_open()) {
         std::cerr << "Unable to open file: " << filename << std::endl;
@@ -49,7 +51,7 @@ bool parseParams(const std::string& filename, Params& params, const std::string&
             trim(key);
             trim(value);
 
-            if (key == "path") params.path = value + name + "/";
+            if (key == "path") params.path = value + sim_name + "/CloudPhinderData/" + name + "/";
             else if (key == "first_snap") params.first_snap = std::stoi(value);
             else if (key == "last_snap") params.last_snap = std::stoi(value);
             else if (key == "cloud_prefix") params.cloud_prefix = value;
@@ -64,8 +66,9 @@ bool parseParams(const std::string& filename, Params& params, const std::string&
             else if (key == "write_filename_base_prefix") params.write_filename_base_prefix = value;
             else if (key == "write_filename_base_suffix") params.write_filename_base_suffix = "_"+name+value;
             else if (key == "particle_lower_limit") params.particle_lower_limit = std::stoi(value);
-            else if (key == "threshold_frac_for_child") params.threshold_frac_for_child = std::stof(value);
-            else if (key == "linker_output_filename_prefix") params.linker_output_filename_prefix = value;
+            else if (key == "threshold_frac_for_child") {params.threshold_frac_for_child = std::stof(value); params.linker_output_filename_prefix = value;}
+            else if (key == "linker_output_filename_prefix") params.linker_output_filename_prefix = value+name+"_thresh"+params.linker_output_filename_prefix;
+
             else std::cerr << "Unknown parameter: " << key << std::endl;
             // Continue for other parameters...
             }

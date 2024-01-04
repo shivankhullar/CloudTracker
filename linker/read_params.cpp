@@ -66,7 +66,7 @@ bool parseParams(const std::string& filename, Params& params, const std::string&
             else if (key == "write_filename_base_prefix") params.write_filename_base_prefix = value;
             else if (key == "write_filename_base_suffix") params.write_filename_base_suffix = "_"+name+value;
             else if (key == "particle_lower_limit") params.particle_lower_limit = std::stoi(value);
-            else if (key == "threshold_frac_for_child") {params.threshold_frac_for_child = std::stof(value); params.linker_output_filename_prefix = value;}
+            else if (key == "threshold_frac_for_child") {params.threshold_frac_for_child = std::stof(value); params.linker_output_filename_prefix = value+"_";}
             else if (key == "linker_output_filename_prefix") params.linker_output_filename_prefix = value+name+"_thresh"+params.linker_output_filename_prefix;
 
             else std::cerr << "Unknown parameter: " << key << std::endl;

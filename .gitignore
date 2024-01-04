@@ -14,3 +14,4 @@ linker/dummy.cpp
 matcher/matcher
 linker/linker
 test_matcher/
+linker/linker_params*

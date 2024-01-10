@@ -1,4 +1,4 @@
-for sim in m12i_fb_20k m12i_nofb_20k m12i_fb_40k m12i_nofb_40k
+for sim in m12i_fb_7k m12i_nofb_7k m12i_fb_57k m12i_nofb_57k
 do 
     for alpha in {2,5,10}
     do 

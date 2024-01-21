@@ -1,6 +1,6 @@
-path= ../../
-first_snap = 590
-last_snap = 615
+path= ../../m12i_final/
+first_snap = 600
+last_snap = 650
 cloud_prefix = Cloud
 dat_filename_base_prefix = bound_
 dat_filename_base_suffix = .dat

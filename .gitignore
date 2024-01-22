@@ -15,3 +15,7 @@ matcher/matcher
 linker/linker
 test_matcher/
 linker/linker_params*
+linker/linker2*
+linker/run_linker*
+matcher/run_matcher*
+matcher/run_cor*

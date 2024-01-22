@@ -362,7 +362,8 @@ void write_to_file(std::vector<std::vector<CloudStruct>> &tracked_cloud_list, Pa
 {
         std::string file_name = params.path + params.linker_output_filename_prefix + get_snapshot_name(params.first_snap) + "_"
                                 + get_snapshot_name(params.last_snap)+ "_" + field_name + ".txt";
-        std::ofstream file(file_name);
+        std::cout << "Writing to file:" << file_name <<std::endl;
+	std::ofstream file(file_name);
         if (field_name.compare("names")==0)
         {
                 for (int i=0; i<tracked_cloud_list.size(); i++)

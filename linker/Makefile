@@ -105,7 +105,7 @@ run:
 
 ## clean: remove intermediate generated files
 clean:
-	$(RM) linker output.dat linker.o linker_functions.o linker_structs.o 
+	$(RM) linker output.dat linker.o linker_functions.o linker_structs.o read_params.o
 
 ## help: print all commented 'make' targets
 # (the sed command displays all lines from the Makefile that start with '##')

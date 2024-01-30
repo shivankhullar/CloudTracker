@@ -19,3 +19,4 @@ linker/linker2*
 linker/run_linker*
 matcher/run_matcher*
 matcher/run_cor*
+.DS_Store

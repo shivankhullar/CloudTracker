@@ -20,3 +20,4 @@ linker/run_linker*
 matcher/run_matcher*
 matcher/run_cor*
 .DS_Store
+*.zip

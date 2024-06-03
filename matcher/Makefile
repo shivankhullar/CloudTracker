@@ -28,13 +28,15 @@ FINCL =
 
 #------------------------------------------------------------
 ifeq ($(SYSTYPE),"Mac")
-CXX = h5c++
-#g++
+#CXX = h5c++
+CXX = g++
 CPPFLAGS =
 CXXFLAGS = -std=c++14 -O3 -g -march=native
+HDF5_INC = /usr/local/Cellar/hdf5/1.14.3/include
+HDF5_LIB = 
 #CXXFLAGS+= -mmacosx-version-min=14.0
 LDFLAGS = -g
-LDLIBS = 
+LDLIBS = -lhdf5 -lz
 MACOSX_DEPLOYMENT_TARGET=14.0
 #-lnetcdf_c++4 -lfftw3
 
@@ -74,19 +76,19 @@ all: matcher
 
 ## matcher: Run the application 'matcher'
 matcher: matcher.o matcher_functions.o structs_and_classes.o read_params.o
-	${CXX} ${LDFLAGS} $^ -o $@ ${LDLIBS}
+	${CXX} -I${HDF5_INC} ${HDF5_LIB} ${LDFLAGS} $^ -o $@ ${LDLIBS}
 
 matcher.o: matcher.cpp
-	${CXX} ${CPPFLAGS} ${CXXFLAGS} ${LDFLAGS} -c -o $@ $^
+	${CXX} ${CPPFLAGS} ${CXXFLAGS} -I${HDF5_INC} ${HDF5_LIB} ${LDFLAGS} -c -o $@ $^
 
 matcher_functions.o: matcher_functions.cpp matcher_functions.h
-	${CXX} ${CPPFLAGS} ${CXXFLAGS} ${LDFLAGS} -c -o matcher_functions.o matcher_functions.cpp
+	${CXX} ${CPPFLAGS} ${CXXFLAGS} -I${HDF5_INC} ${HDF5_LIB} ${LDFLAGS} -c -o matcher_functions.o matcher_functions.cpp
 
 structs_and_classes.o: structs_and_classes.cpp structs_and_classes.h
-	${CXX} ${CPPFLAGS} ${CXXFLAGS} ${LDFLAGS} -c -o structs_and_classes.o structs_and_classes.cpp
+	${CXX} ${CPPFLAGS} ${CXXFLAGS} -I${HDF5_INC} ${HDF5_LIB} ${LDFLAGS} -c -o structs_and_classes.o structs_and_classes.cpp
 
 read_params.o: read_params.cpp read_params.h
-	${CXX} ${CPPFLAGS} ${CXXFLAGS} ${LDFLAGS} -c -o read_params.o read_params.cpp
+	${CXX} ${CPPFLAGS} ${CXXFLAGS} -I${HDF5_INC} ${HDF5_LIB} ${LDFLAGS} -c -o read_params.o read_params.cpp
 
 ## run: Run the matcher program
 run:

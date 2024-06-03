@@ -11,8 +11,10 @@
 #include <string>
 //#include <rarray>
 
-#include <H5Cpp.h>
-using namespace H5;
+//#include <H5Cpp.h>
+//using namespace H5;
+#include <hdf5.h>
+#include <vector>
 
 #include "structs_and_classes.h"
 #include "matcher_functions.h"

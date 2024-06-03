@@ -5,10 +5,12 @@
 /// @date       June 2024
 
 #include <string>
-#include "../../include/matcher/structs_and_classes.h"
-//#include "utilities.h"
-#include "../../include/matcher/matcher_functions.h"
-
+//#include "../../include/matcher/structs_and_classes.h"
+#include "structs_and_classes.h"
+//#include "../../include/matcher/utilities.h"
+#include "utilities.h"
+//#include "../../include/matcher/matcher_functions.h"
+#include "matcher_functions.h"
 
 
 
@@ -44,6 +46,7 @@ ChildParentInstance::ChildParentInstance(std::string name_arg, double parents_ma
 /// @brief      This is a class to create a member cloud
 /// @param      name_arg: The name of the member cloud
 /// @param      pIDs: The particle IDs of the member cloud
+/// @param      pIDgen: The particle ID generator of the member cloud
 /// @param      masses_arg: The masses of the member cloud
 /// @return
 MemberCloud::MemberCloud(std::string name_arg, std::vector<double> pIDs, std::vector<double> pIDgen, std::vector<double> masses_arg)
@@ -136,3 +139,4 @@ CitySnaps::CitySnaps(int snapnums1, int snapnums2)
 
 
 
+//int main(){};

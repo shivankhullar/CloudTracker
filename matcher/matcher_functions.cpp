@@ -1,116 +1,136 @@
 #include "matcher_functions.h"
 #include "structs_and_classes.h"
 
-#include <H5Cpp.h>
-using namespace H5;
+//#include <H5Cpp.h>
+#include <hdf5.h>
+#include <iostream>
+#include <string>
+#include <vector>
+//using namespace H5;
 
 
-/// @brief	Matches clouds between two snapshots.
-/// @param	params		Parameters for the code.
+void write_to_hdf5_file(CitySnaps& snapsnap, Params& params, int parent_num_clouds, int child_num_clouds) {
+    std::string fname = params.path + params.write_filename_base_prefix + get_snapshot_name(snapsnap.snap_num1) + "_" +
+                        get_snapshot_name(snapsnap.snap_num2) + params.write_filename_base_suffix;
 
+    std::cout << "=======================\n"
+              << "Writing to file: " << fname << "\n"
+              << "=======================\n";
 
-/// @brief     Writes the tracked clouds to an hdf5 file.
-/// @param snapsnap : The structure containing the matched clouds.
-/// @param params : The parameters for the code.
-/// @param parent_num_clouds : The number of parent clouds.
-/// @param child_num_clouds : The number of child clouds.
-void write_to_hdf5_file(CitySnaps snapsnap, Params &params, int parent_num_clouds, int child_num_clouds)
-{
-        // file name
-	H5std_string fname = params.path+params.write_filename_base_prefix + get_snapshot_name(snapsnap.snap_num1) + "_" +
-				get_snapshot_name(snapsnap.snap_num2) + params.write_filename_base_suffix;
+    hid_t file_id = H5Fcreate(fname.c_str(), H5F_ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT);
+    hid_t parent_group_id = H5Gcreate(file_id, "parent_group", H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+    hid_t child_group_id = H5Gcreate(file_id, "child_group", H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
 
-	std::cout << "=======================" <<std::endl;
-	std::cout << "=======================" <<std::endl;
-	std::cout << "Writing to file: " << fname << std::endl;
-	std::cout << "=======================" <<std::endl;
-	std::cout << "=======================" <<std::endl;
-	
+    for (int i = 0; i < parent_num_clouds; ++i) {
+        hid_t cloud_data_parent_id = H5Gcreate(parent_group_id, snapsnap.parent_group.members[i].name.c_str(), H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+        writeCloudData(cloud_data_parent_id, snapsnap.parent_group.members[i], 0);
+        writeGroupDataChildren(cloud_data_parent_id, "children", snapsnap.parent_group.members[i]);
+        H5Gclose(cloud_data_parent_id);
+    }
 
-        // Create the hdf5 file
-	hsize_t dimsf[1]; int rank = 1; dimsf[0] = 1;
-	H5::H5File file_out(fname, H5F_ACC_TRUNC);
-	H5std_string parent_group_name = "parent_group";
-	H5std_string child_group_name = "child_group";
-	H5std_string parent_group_subgroup_name = "children";
-	H5std_string child_group_subgroup_name = "parents";
+    for (int i = 0; i < child_num_clouds; ++i) {
+        hid_t cloud_data_child_id = H5Gcreate(child_group_id, snapsnap.child_group.members[i].name.c_str(), H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+        writeCloudData(cloud_data_child_id, snapsnap.child_group.members[i], 1);
+        writeGroupDataParents(cloud_data_child_id, "parents", snapsnap.child_group.members[i]);
+        H5Gclose(cloud_data_child_id);
+    }
 
-        // Create the groups
-	H5::Group parent_group = file_out.createGroup(parent_group_name);
-	H5::Group child_group = file_out.createGroup(child_group_name);	
+    H5Gclose(parent_group_id);
+    H5Gclose(child_group_id);
+    H5Fclose(file_id);
+}
 
-        // Write the datasets in the parent group
-	for (int i=0; i<parent_num_clouds; i++)
-	{
-		H5::Group cloud_data_parent = parent_group.createGroup(snapsnap.parent_group.members[i].name);
+void writeCloudData(hid_t group_id, const MemberCloud& member, int child_flag) {
+    hsize_t dims[1] = {1};
+    hid_t dataspace_id = H5Screate_simple(1, dims, nullptr);
+    hid_t datatype_id = H5Tcopy(H5T_NATIVE_DOUBLE);
+    H5Tset_order(datatype_id, H5T_ORDER_LE);
 
-		H5::DataSpace dataspace( rank, dimsf);
-                H5::DataType datatype (H5::PredType::IEEE_F64LE);
-		H5::DataSet dataset = cloud_data_parent.createDataSet("total_mass_parent", datatype, dataspace );
-                double value = snapsnap.parent_group.members[i].total_mass;
-                dataset.write(&value, H5::PredType::IEEE_F64LE);
-		//std::cout << "Written total_mass dataset" << std::endl;
-		H5::Group children = cloud_data_parent.createGroup(parent_group_subgroup_name);
-		for (int j=0; j<snapsnap.parent_group.members[i].num_children; j++)
-		{
-			//H5::Group children = cloud_data_parent.createGroup(parent_group_subgroup_name);
-			H5::Group child_data = children.createGroup(snapsnap.parent_group.members[i].children[j].name);
-			
-			//std::cout << "Created all the relevant groups" << std::endl;
-			//H5::DataSpace dataspace( rank, dimsf);
-			//H5::DataType datatype (H5T_IEEE_F64LE);
+    if (child_flag==0){
+        hid_t dataset_id = H5Dcreate(group_id, "total_mass_parent", datatype_id, dataspace_id, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+        H5Dwrite(dataset_id, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL, H5P_DEFAULT, &member.total_mass);
+        H5Sclose(dataspace_id);
+        H5Tclose(datatype_id);
+        H5Dclose(dataset_id);
+    }
+    else {
+        hid_t dataset_id = H5Dcreate(group_id, "total_mass_child", datatype_id, dataspace_id, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+        H5Dwrite(dataset_id, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL, H5P_DEFAULT, &member.total_mass);
+        H5Sclose(dataspace_id);
+        H5Tclose(datatype_id);
+        H5Dclose(dataset_id);
+    }
+    
 
-                        // Write the three datasets: parents_mass_frac_to_child, childs_mass_frac_from_parent, child_total_mass
-			H5::DataSet dataset_parent2 = child_data.createDataSet("parents_mass_frac_to_child", datatype, dataspace );
-			double value2 = snapsnap.parent_group.members[i].children[j].parents_mass_frac_to_child;
-			std::cout << "While writing, parents mass frac to child: " << value2 << ", " << snapsnap.parent_group.members[i].children[j].parents_mass_frac_to_child << std::endl;
-			dataset_parent2.write(&value2, H5::PredType::IEEE_F64LE);
+    
+}
 
-			H5::DataSet dataset_parent1 = child_data.createDataSet("childs_mass_frac_from_parent", datatype, dataspace );
-                        double value1 = snapsnap.parent_group.members[i].children[j].childs_mass_frac_from_parent;
-                        dataset_parent1.write(&value1, H5::PredType::IEEE_F64LE);
+void writeGroupDataChildren(hid_t group_id, const std::string& subgroup_name, const MemberCloud& member) {
+    hid_t subgroup_id = H5Gcreate(group_id, subgroup_name.c_str(), H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
 
-			H5::DataSet dataset_parent3 = child_data.createDataSet("child_total_mass", datatype, dataspace );
-                        double value3 = snapsnap.parent_group.members[i].children[j].total_mass;
-                        dataset_parent3.write(&value3, H5::PredType::IEEE_F64LE);
-		}
-	}
+    for (const auto& child : member.children) {
+        hid_t child_group_id = H5Gcreate(subgroup_id, child.name.c_str(), H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
 
-        // Write the datasets in the child group
-	for (int i=0; i<child_num_clouds; i++) 
-	{
-		H5::Group cloud_data_child = child_group.createGroup(snapsnap.child_group.members[i].name);
-		H5::DataSpace dataspace( rank, dimsf);
-                H5::DataType datatype (H5::PredType::IEEE_F64LE);
-		H5::DataSet dataset_child = cloud_data_child.createDataSet("total_mass_child", datatype, dataspace );
-                double value = snapsnap.child_group.members[i].total_mass;
-                dataset_child.write(&value, H5::PredType::IEEE_F64LE);
-		H5::Group parents = cloud_data_child.createGroup(child_group_subgroup_name);
+        hsize_t dims[1] = {1};
+        hid_t dataspace_id = H5Screate_simple(1, dims, nullptr);
+        hid_t datatype_id = H5Tcopy(H5T_NATIVE_DOUBLE);
+        H5Tset_order(datatype_id, H5T_ORDER_LE);
 
-                // Write the datasets in the child group
-                for (int j=0; j<snapsnap.child_group.members[i].num_parents; j++)
-                {
-			//H5::Group parents = cloud_data_child.createGroup(child_group_subgroup_name);
-                        H5::Group parents_data = parents.createGroup(snapsnap.child_group.members[i].parents[j].name);
-                        //H5::DataSpace dataspace( rank, dimsf);
-                        //H5::DataType datatype (H5T_IEEE_F64LE);
-                        
-                        // Write the three datasets: parents_mass_frac_to_child, childs_mass_frac_from_parent, parent_total_mass
-			H5::DataSet dataset_child1 = parents_data.createDataSet("childs_mass_frac_from_parent", datatype, dataspace );
-                        double value1 = snapsnap.child_group.members[i].parents[j].childs_mass_frac_from_parent;
-			dataset_child1.write(&value1, H5::PredType::IEEE_F64LE);
-			
-			H5::DataSet dataset_child2 = parents_data.createDataSet("parents_mass_frac_to_child", datatype, dataspace );
-                        double value2 = snapsnap.child_group.members[i].parents[j].parents_mass_frac_to_child;
-			std::cout << "While writing child_group clouds, parents mass frac to child: " << value2 << ", " << std::endl;
-                        dataset_child2.write(&value2, H5::PredType::IEEE_F64LE);
-			
-			H5::DataSet dataset_child3 = parents_data.createDataSet("parent_total_mass", datatype, dataspace );
-                        double value3 = snapsnap.child_group.members[i].parents[j].total_mass;
-                        dataset_child3.write(&value3, H5::PredType::IEEE_F64LE);
-                }
-	}
-	
+        // Write parents_mass_frac_to_child
+        hid_t dataset_id = H5Dcreate(child_group_id, "parents_mass_frac_to_child", datatype_id, dataspace_id, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+        H5Dwrite(dataset_id, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL, H5P_DEFAULT, &child.parents_mass_frac_to_child);
+        H5Dclose(dataset_id);
+
+        // Write childs_mass_frac_from_parent
+        dataset_id = H5Dcreate(child_group_id, "childs_mass_frac_from_parent", datatype_id, dataspace_id, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+        H5Dwrite(dataset_id, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL, H5P_DEFAULT, &child.childs_mass_frac_from_parent);
+        H5Dclose(dataset_id);
+
+        // Write child_total_mass
+        dataset_id = H5Dcreate(child_group_id, "child_total_mass", datatype_id, dataspace_id, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+        H5Dwrite(dataset_id, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL, H5P_DEFAULT, &child.total_mass);
+        H5Dclose(dataset_id);
+
+        H5Sclose(dataspace_id);
+        H5Tclose(datatype_id);
+        H5Gclose(child_group_id);
+    }
+
+    H5Gclose(subgroup_id);
+}
+
+void writeGroupDataParents(hid_t group_id, const std::string& subgroup_name, const MemberCloud& member) {
+    hid_t subgroup_id = H5Gcreate(group_id, subgroup_name.c_str(), H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+
+    for (const auto& parent : member.parents) {
+        hid_t child_group_id = H5Gcreate(subgroup_id, parent.name.c_str(), H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+
+        hsize_t dims[1] = {1};
+        hid_t dataspace_id = H5Screate_simple(1, dims, nullptr);
+        hid_t datatype_id = H5Tcopy(H5T_NATIVE_DOUBLE);
+        H5Tset_order(datatype_id, H5T_ORDER_LE);
+
+        // Write parents_mass_frac_to_child
+        hid_t dataset_id = H5Dcreate(child_group_id, "parents_mass_frac_to_child", datatype_id, dataspace_id, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+        H5Dwrite(dataset_id, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL, H5P_DEFAULT, &parent.parents_mass_frac_to_child);
+        H5Dclose(dataset_id);
+
+        // Write childs_mass_frac_from_parent
+        dataset_id = H5Dcreate(child_group_id, "childs_mass_frac_from_parent", datatype_id, dataspace_id, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+        H5Dwrite(dataset_id, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL, H5P_DEFAULT, &parent.childs_mass_frac_from_parent);
+        H5Dclose(dataset_id);
+
+        // Write child_total_mass
+        dataset_id = H5Dcreate(child_group_id, "parent_total_mass", datatype_id, dataspace_id, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+        H5Dwrite(dataset_id, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL, H5P_DEFAULT, &parent.total_mass);
+        H5Dclose(dataset_id);
+
+        H5Sclose(dataspace_id);
+        H5Tclose(datatype_id);
+        H5Gclose(child_group_id);
+    }
+
+    H5Gclose(subgroup_id);
 }
 
 /// @brief Function to print a double array
@@ -133,30 +153,6 @@ void print_array_int(std::vector<int> a)
         }
 }
 
-/// @brief Function to get the last group in the subgroup struct
-/// @param subgroup_struct 
-/// @param group 
-/// @return 
-H5::Group get_last_group(Group_struct *subgroup_struct, H5::Group group)
-{
-        if (subgroup_struct->subgroup!=NULL)
-        {
-                //std::cout << "Trying for group: " << subgroup_struct->name << std::endl;
-                H5::Group grp = group.openGroup(subgroup_struct->name);
-                H5::Group grp1 = get_last_group(subgroup_struct->subgroup, grp);
-                //std::cout << "Hi, opened group: " << subgroup_struct->name << std::endl;
-                return grp1;
-                //gname = file_arch->subgroup->name;
-        }
-        else
-	{
-                //std::cout << "Reached bottom group, this is a dataset: " << subgroup_struct->name << std::endl;
-                //H5::Group grp = group.openGroup(subgroup_struct->name);
-                //std::cout << "Hi, opened last group: " << subgroup_struct->name << std::endl;
-                return group;
-        }
-        //return grp1;
-}
 
 /// @brief Function to get the name of the snapshot part of a Cloud
 /// @param i : the snapshot number
@@ -170,69 +166,102 @@ std::string get_snapshot_name(int i)
 }
 
 
-std::vector<int> read_cloud_data_int(Params &params, int snap_num, std::string field_to_read, std::string cloud_name)
+std::vector<int> read_cloud_data_int(Params& params, int snap_num, const std::string& field_to_read, const std::string& cloud_name) {
+    Group_struct* file_arch = create_group(params.file_arch_root);
+    file_arch->subgroup = create_group(cloud_name);
+    file_arch->subgroup->subgroup = create_group(params.file_arch_cloud_subgroup);
+    file_arch->subgroup->subgroup->subgroup = create_group(field_to_read);
+    std::string fname = params.path + params.filename_base_prefix + get_snapshot_name(snap_num) + params.filename_base_suffix;
+
+    // Print the file name
+    std::cout << "Reading file: " << fname << std::endl;
+
+    hid_t file_id = H5Fopen(fname.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
+    if (file_id < 0) {
+        std::cerr << "Failed to open file: " << fname << std::endl;
+        delete file_arch;
+        return {};
+    }
+
+    hid_t root_group_id = H5Gopen(file_id, file_arch->name.c_str(), H5P_DEFAULT);
+    hid_t last_group_id = get_last_group(file_arch->subgroup, root_group_id);
+    H5Gclose(root_group_id);
+
+    hid_t dataset_id = H5Dopen(last_group_id, field_to_read.c_str(), H5P_DEFAULT);
+    hid_t dataspace_id = H5Dget_space(dataset_id);
+
+    hsize_t dims[1];
+    H5Sget_simple_extent_dims(dataspace_id, dims, nullptr);
+
+    std::vector<int> data(dims[0]);
+    hid_t memspace_id = H5Screate_simple(1, dims, nullptr);
+    H5Dread(dataset_id, H5T_NATIVE_INT, memspace_id, dataspace_id, H5P_DEFAULT, data.data());
+
+    H5Sclose(memspace_id);
+    H5Sclose(dataspace_id);
+    H5Dclose(dataset_id);
+    H5Gclose(last_group_id);
+    H5Fclose(file_id);
+
+    delete file_arch;
+    return data;
+}
+
+
+hid_t get_last_group(Group_struct *subgroup_struct, hid_t group)
+{
+        if (subgroup_struct->subgroup!=NULL)
+        {
+                //std::cout << "Trying for group: " << subgroup_struct->name << std::endl;
+                hid_t grp = H5Gopen(group, &subgroup_struct->name[0], H5P_DEFAULT);
+                //group.openGroup(subgroup_struct->name);
+                hid_t grp1 = get_last_group(subgroup_struct->subgroup, grp);
+                //H5::Group grp1 = get_last_group(subgroup_struct->subgroup, grp);
+                //std::cout << "Hi, opened group: " << subgroup_struct->name << std::endl;
+                return grp1;
+                //gname = file_arch->subgroup->name;
+        }
+	else
+	{
+                //std::cout << "Reached bottom group, this is a dataset: " << subgroup_struct->name << std::endl;
+                //H5::Group grp = group.openGroup(subgroup_struct->name);
+                //std::cout << "Hi, opened last group: " << subgroup_struct->name << std::endl;
+                return group;
+        }
+}
+
+std::vector<double> read_cloud_data_double(Params &params, int snap_num, std::string& field_to_read, std::string& cloud_name)
 {
         Group_struct *file_arch = create_group(params.file_arch_root);
         file_arch->subgroup = create_group(cloud_name);
         file_arch->subgroup->subgroup = create_group(params.file_arch_cloud_subgroup);
         file_arch->subgroup->subgroup->subgroup = create_group(field_to_read);
-        H5std_string fname = params.path+params.filename_base_prefix+get_snapshot_name(snap_num)+params.filename_base_suffix;
+        std::string fname = params.path+params.filename_base_prefix+get_snapshot_name(snap_num)+params.filename_base_suffix;
+	
+	hid_t file = H5Fopen (&fname[0], H5F_ACC_RDONLY, H5P_DEFAULT);
+        //H5File file(fname, H5F_ACC_RDONLY);
+        std::string root = file_arch->name;
+        hid_t grp_root = H5Gopen(file, &root[0], H5P_DEFAULT);
+        hid_t last_group = get_last_group(file_arch->subgroup, grp_root);
+        hid_t dataset = H5Dopen(last_group, &field_to_read[0], H5P_DEFAULT);
+        //H5::DataSet dataset = last_group.openDataSet(field_to_read);
 
-        H5File file(fname, H5F_ACC_RDONLY);
-        H5std_string root = file_arch->name;
-        H5::Group grp_root = file.openGroup(root);
-        H5::Group last_group = get_last_group(file_arch->subgroup, grp_root);
-        H5::DataSet dataset = last_group.openDataSet(field_to_read);
-        H5::DataSpace dataspace = dataset.getSpace();
-
-        int rank = dataspace.getSimpleExtentNdims();
-        //hsize_t dims_out[rank];
+        hid_t dataspace = H5Dget_space (dataset);
+        int rank = H5Sget_simple_extent_ndims (dataspace);
         hsize_t dims_out[1];
-        int ndims = dataspace.getSimpleExtentDims(dims_out, NULL);
+        int status_n  = H5Sget_simple_extent_dims (dataspace, dims_out, NULL);
+        std::vector<double> data(dims_out[0]);
+        hid_t memspace = H5Screate_simple (rank, dims_out, NULL);
+        //DataSpace memspace(rank, dims_out);
+        herr_t status = H5Dread (dataset, H5T_IEEE_F64LE, memspace, dataspace,
+                      H5P_DEFAULT, &data[0]);
 
-        std::vector<int> data(dims_out[0]);
-        //rarray<double,1> d(dims_out[0]);
+	//dataset.read(&data[0], H5::PredType::IEEE_F64LE, memspace, dataspace);
 
-        DataSpace memspace(rank, dims_out);
-	dataset.read(&data[0], H5::PredType::NATIVE_INT16, memspace, dataspace);
-	delete file_arch;
-	//std::cout << "Read dataset" << std::endl;
-	//print_array_int(data);
+        delete file_arch;
+        //std::cout << "Read dataset" << std::endl;
+        //print_array_double(data);
         return data;
-}
-
-
-std::vector<double> read_cloud_data_double(Params &params, int snap_num, std::string field_to_read, std::string cloud_name)
-{
-	Group_struct *file_arch = create_group(params.file_arch_root);
-        file_arch->subgroup = create_group(cloud_name);
-        file_arch->subgroup->subgroup = create_group(params.file_arch_cloud_subgroup);
-        file_arch->subgroup->subgroup->subgroup = create_group(field_to_read);
-	H5std_string fname = params.path+params.filename_base_prefix+get_snapshot_name(snap_num)+params.filename_base_suffix;
-        
-	H5File file(fname, H5F_ACC_RDONLY);
-        H5std_string root = file_arch->name;
-        H5::Group grp_root = file.openGroup(root);
-	H5::Group last_group = get_last_group(file_arch->subgroup, grp_root);
-        H5::DataSet dataset = last_group.openDataSet(field_to_read);
-        H5::DataSpace dataspace = dataset.getSpace();
-	
-	int rank = dataspace.getSimpleExtentNdims();
-        //hsize_t dims_out[rank];
-        hsize_t dims_out[1];
-        int ndims = dataspace.getSimpleExtentDims(dims_out, NULL);
-
-	//std::vector<int> data(dims_out[0]);
-	std::vector<double> data(dims_out[0]);
-	//rarray<double,1> d(dims_out[0]);
-	
-
-        DataSpace memspace(rank, dims_out);
-        dataset.read(&data[0], H5::PredType::IEEE_F64LE, memspace, dataspace);
-	delete file_arch;
-	//std::cout << "Read dataset" << std::endl;
-	//print_array_double(data);
-	return data;
 }
 
 

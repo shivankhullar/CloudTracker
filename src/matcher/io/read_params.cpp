@@ -1,10 +1,21 @@
+/// @file       read_params.cpp
+/// @brief 	    This file contains the implementation of the functions that read in the parameters from the parameter file.
+///             The parameters are stored in a struct called Params. The functions are used in the main driver to read in the parameters
+///             and assign them to the code variables.
+/// @author     Shivan Khullar
+/// @date       June 2024
+
+
 #include <iostream>
 #include <fstream>
 #include <sstream>
 #include <string>
-
 #include "../../../include/matcher/read_params.h"
 
+
+
+/// @brief    Trims the leading and trailing whitespaces from a string
+/// @param s 
 void trim(std::string &s) {
     s.erase(s.begin(), std::find_if(s.begin(), s.end(), [](unsigned char ch) {
         return !std::isspace(ch);
@@ -14,6 +25,10 @@ void trim(std::string &s) {
     }).base(), s.end());
 }
 
+
+
+/// @brief          Prints the parameters read from the parameter file to the console
+/// @param params
 void printParams(const Params& params) {
     std::cout << "Path: " << params.path << std::endl;
     std::cout << "First Snap: " << params.first_snap << std::endl;
@@ -34,6 +49,14 @@ void printParams(const Params& params) {
 }
 
 
+
+
+/// @brief          Parses the parameters from the parameter file and assigns them to the Params struct
+/// @param filename path to the parameter file
+/// @param params   the struct to store the parameters
+/// @param name     the name of the identification configuration (e.g. - n10_alpha2 for CloudPhinder)
+/// @param sim_name the name of the simulation
+/// @return         True if successful, false if not
 bool parseParams(const std::string& filename, Params& params, const std::string& name, const std::string& sim_name) {
     std::ifstream file(filename);
     if (!file.is_open()) {

@@ -1,6 +1,11 @@
-/// @file       matcher.cpp 
-/// @brief 	    This file contains the utility functions for the matcher application.
-
+/// @file       structs_and_classes.cpp 
+/// @brief 	    This file contains the definitions of the classes and structures used in the matcher application.
+///             This includes the Group_struct, Params, ChildParentInstance, MemberCloud, and CitySnaps classes.
+///             The Group_struct class is used to read in the group structure from the HDF5 file.
+///             The ChildParentInstance class is used to store information about a child cloud and its parent.    
+///             The MemberCloud class is used to store information about a cloud entity in a snapshot.
+///             The CitySnaps class is used to store information about clouds in a city (combination of two snapshots).
+///             The CloudGroup class is a group of clouds in a city.
 /// @author     Shivan Khullar
 /// @date       June 2024
 
@@ -11,7 +16,9 @@
 
 
 
-/// @brief      This is a class to create a group structure 
+/// @brief      This is a class to create a group structure
+///             It is used to read in the group structure
+///             and group substructure from the HDF5 file
 /// @param      name: The name of the group to be created
 /// @return 
 Group_struct* create_group(std::string name)
@@ -75,7 +82,7 @@ MemberCloud::MemberCloud(std::string name_arg, std::vector<double> pIDs, std::ve
 
 
 
-/// @brief      This is a class to add a child to a member cloud
+/// @brief      This is a class which contains information about clouds in a city (combination of two snapshots)
 /// @param      name: The name of the child
 /// @param      parents_mass_frac_to_child: The mass fraction from parent to child
 /// @param      childs_mass_frac_from_parent: The mass fraction from child to parent

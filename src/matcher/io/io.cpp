@@ -1,12 +1,26 @@
+/// @file       io.cpp 
+/// @brief 	    This file contains the definitions of the functions used to write and read data to and from HDF5 files.
+///             The write_to_hdf5_file function writes the data to an HDF5 file.
+///             The writeCloudData function writes the cloud data to the HDF5 file.
+///             The writeGroupDataChildren function writes the children data to the HDF5 file.
+///             The writeGroupDataParents function writes the parents data to the HDF5 file.
+///             The get_last_group function gets the last group in the group structure.
+///             The read_cloud_data_int function reads integer data from the HDF5 file.
+///             The read_cloud_data_double function reads double data from the HDF5 file.
+/// @author     Shivan Khullar
+/// @date       June 2024
 
 #include "../../../include/matcher/io.h"
 #include <hdf5.h>
 #include <iostream>
 #include <string>
 #include <vector>
-//using namespace H5;
 
-
+/// @brief                      This function writes the data to an HDF5 file.
+/// @param snapsnap             The CitySnaps object containing the data to be written to the HDF5 file.
+/// @param params               The Params object containing the parameters of the program.
+/// @param parent_num_clouds    The number of parent clouds.
+/// @param child_num_clouds     The number of child clouds.
 void write_to_hdf5_file(CitySnaps& snapsnap, Params& params, int parent_num_clouds, int child_num_clouds) {
     std::string fname = params.path + params.write_filename_base_prefix + get_snapshot_name(snapsnap.snap_num1) + "_" +
                         get_snapshot_name(snapsnap.snap_num2) + params.write_filename_base_suffix;
@@ -38,6 +52,12 @@ void write_to_hdf5_file(CitySnaps& snapsnap, Params& params, int parent_num_clou
     H5Fclose(file_id);
 }
 
+
+
+/// @brief                      This function writes the cloud data to the HDF5 file.
+/// @param group_id             The group ID of the group to which the data is to be written.
+/// @param member               The MemberCloud object containing the cloud data.
+/// @param child_flag           The flag indicating whether the cloud is a child or a parent.
 void writeCloudData(hid_t group_id, const MemberCloud& member, int child_flag) {
     hsize_t dims[1] = {1};
     hid_t dataspace_id = H5Screate_simple(1, dims, nullptr);
@@ -58,11 +78,14 @@ void writeCloudData(hid_t group_id, const MemberCloud& member, int child_flag) {
         H5Tclose(datatype_id);
         H5Dclose(dataset_id);
     }
-    
-
-    
 }
 
+
+
+/// @brief                      This function writes the children data to the HDF5 file.
+/// @param group_id             The group ID of the group to which the data is to be written.
+/// @param subgroup_name        The name of the subgroup to which the data is to be written.
+/// @param member               The MemberCloud object containing the cloud data.
 void writeGroupDataChildren(hid_t group_id, const std::string& subgroup_name, const MemberCloud& member) {
     hid_t subgroup_id = H5Gcreate(group_id, subgroup_name.c_str(), H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
 
@@ -97,6 +120,12 @@ void writeGroupDataChildren(hid_t group_id, const std::string& subgroup_name, co
     H5Gclose(subgroup_id);
 }
 
+
+
+/// @brief                      This function writes the parents data to the HDF5 file.
+/// @param group_id             The group ID of the group to which the data is to be written.
+/// @param subgroup_name        The name of the subgroup to which the data is to be written.
+/// @param member               The MemberCloud object containing the cloud data.
 void writeGroupDataParents(hid_t group_id, const std::string& subgroup_name, const MemberCloud& member) {
     hid_t subgroup_id = H5Gcreate(group_id, subgroup_name.c_str(), H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
 
@@ -132,6 +161,13 @@ void writeGroupDataParents(hid_t group_id, const std::string& subgroup_name, con
 }
 
 
+
+/// @brief                          This function reads integer data from the HDF5 file.
+/// @param params                   The Params object containing the parameters of the program.
+/// @param snap_num                 The snapshot number.
+/// @param field_to_read            The field to read from the HDF5 file.
+/// @param cloud_name               The name of the cloud whose data to read.
+/// @return                         The integer data read from the HDF5 file.
 std::vector<int> read_cloud_data_int(Params& params, int snap_num, const std::string& field_to_read, const std::string& cloud_name) {
     Group_struct* file_arch = create_group(params.file_arch_root);
     file_arch->subgroup = create_group(cloud_name);
@@ -174,28 +210,14 @@ std::vector<int> read_cloud_data_int(Params& params, int snap_num, const std::st
 }
 
 
-hid_t get_last_group(Group_struct *subgroup_struct, hid_t group)
-{
-        if (subgroup_struct->subgroup!=NULL)
-        {
-                //std::cout << "Trying for group: " << subgroup_struct->name << std::endl;
-                hid_t grp = H5Gopen(group, &subgroup_struct->name[0], H5P_DEFAULT);
-                //group.openGroup(subgroup_struct->name);
-                hid_t grp1 = get_last_group(subgroup_struct->subgroup, grp);
-                //H5::Group grp1 = get_last_group(subgroup_struct->subgroup, grp);
-                //std::cout << "Hi, opened group: " << subgroup_struct->name << std::endl;
-                return grp1;
-                //gname = file_arch->subgroup->name;
-        }
-	else
-	{
-                //std::cout << "Reached bottom group, this is a dataset: " << subgroup_struct->name << std::endl;
-                //H5::Group grp = group.openGroup(subgroup_struct->name);
-                //std::cout << "Hi, opened last group: " << subgroup_struct->name << std::endl;
-                return group;
-        }
-}
 
+
+/// @brief                          This function reads double data from the HDF5 file.
+/// @param params                   The Params object containing the parameters of the program.
+/// @param snap_num                 The snapshot number.
+/// @param field_to_read            The field to read from the HDF5 file.
+/// @param cloud_name               The name of the cloud whose data to read.
+/// @return                         The double data read from the HDF5 file.
 std::vector<double> read_cloud_data_double(Params &params, int snap_num, std::string& field_to_read, std::string& cloud_name)
 {
         Group_struct *file_arch = create_group(params.file_arch_root);
@@ -229,3 +251,34 @@ std::vector<double> read_cloud_data_double(Params &params, int snap_num, std::st
         //print_array_double(data);
         return data;
 }
+
+
+
+/// @brief                      This function gets the last group in the group structure.
+/// @param subgroup_struct      The Group_struct object containing the group structure.
+/// @param group                The group ID of the group.
+/// @return                     The last group in the group structure.
+hid_t get_last_group(Group_struct *subgroup_struct, hid_t group)
+{
+        if (subgroup_struct->subgroup!=NULL)
+        {
+                //std::cout << "Trying for group: " << subgroup_struct->name << std::endl;
+                hid_t grp = H5Gopen(group, &subgroup_struct->name[0], H5P_DEFAULT);
+                //group.openGroup(subgroup_struct->name);
+                hid_t grp1 = get_last_group(subgroup_struct->subgroup, grp);
+                //H5::Group grp1 = get_last_group(subgroup_struct->subgroup, grp);
+                //std::cout << "Hi, opened group: " << subgroup_struct->name << std::endl;
+                return grp1;
+                //gname = file_arch->subgroup->name;
+        }
+	else
+	{
+                //std::cout << "Reached bottom group, this is a dataset: " << subgroup_struct->name << std::endl;
+                //H5::Group grp = group.openGroup(subgroup_struct->name);
+                //std::cout << "Hi, opened last group: " << subgroup_struct->name << std::endl;
+                return group;
+        }
+}
+
+
+

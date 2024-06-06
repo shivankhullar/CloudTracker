@@ -1,3 +1,16 @@
+/// @file       matcher_functions.cpp 
+/// @brief      Contains the definitions of the functions used in the matcher application.
+///             This includes the compare_particles, mass_frac, get_cloud_name, and load_clouds_to_group functions.
+///             The compare_particles function compares two particle ID lists and counts the number of matching IDs.
+///             The mass_frac function calculates the mass fraction of particles between two clouds.
+///             The get_cloud_name function returns the name of the cloud based on the cloud number.
+///             The load_clouds_to_group function loads the cloud data into the parent or child group.
+///             The matcher function is the main driver of the matcher application.
+///             It matches the particles among different cloud entities.
+/// @author     Shivan Khullar
+/// @date       June 2024
+
+
 #include "../../../include/matcher/matcher_functions.h"
 #include "../../../include/matcher/structs_and_classes.h"
 #include "../../../include/matcher/read_params.h"

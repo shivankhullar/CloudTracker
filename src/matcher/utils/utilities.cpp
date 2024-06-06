@@ -1,4 +1,4 @@
-/// @file       matcher.cpp 
+/// @file       utilities.cpp 
 /// @brief      This file contains utility functions for the matcher application.
 ///             This includes functions to check if a double exists in a vector, get the first index of a double in a vector,
 ///             print a double array, print an int array, sum the elements of a double array, get the name of the snapshot part of a Cloud,

@@ -1,0 +1,17 @@
+path= ../../../../FIRE/m12i_final/
+first_snap = 600
+last_snap = 601
+cloud_prefix = Cloud
+dat_filename_base_prefix = bound_
+dat_filename_base_suffix = .dat
+filename_base_prefix = Clouds_
+filename_base_suffix = .hdf5
+file_arch_root = /
+file_arch_cloud_subgroup = PartType0
+file_arch_masses_field = Masses
+file_arch_pIDs_field = ParticleIDs
+file_arch_pIDgen_field = ParticleIDGenerationNumber
+write_filename_base_prefix = Test_Tracked_Clouds_
+write_filename_base_suffix = .hdf5
+particle_lower_limit = 32
+

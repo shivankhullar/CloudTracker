@@ -4,9 +4,9 @@
 /// @author     Shivan Khullar
 /// @date       June 2024
 
-#include "../../include/matcher/structs_and_classes.h"
+#include "../../../include/matcher/structs_and_classes.h"
 #include <string>
-#include "../../include/matcher/matcher_functions.h"
+#include "../../../include/matcher/matcher_functions.h"
 
 
 /// @brief      Check if a double exists in a vector

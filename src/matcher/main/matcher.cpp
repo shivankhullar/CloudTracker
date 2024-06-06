@@ -1,9 +1,8 @@
-/// @file matcher.cpp 
+/// @file 	matcher.cpp 
 /// @brief 	This is the main driver of the matcher application. Its purpose is to match the particles
-///		among different cloud entities. 
-
+///			among different cloud entities. It reads in the parameters from the xyz_params.txt file and assigns
 /// @author Shivan Khullar
-/// @date May 2021
+/// @date 	June 2024
 
 
 //#include <mpi.h>
@@ -17,11 +16,13 @@
 #include "../../../include/matcher/read_params.h"
 #include "../../../include/matcher/io.h"
 #include "../../../include/matcher/utilities.h"
-
 using namespace std;
 
+
+
+
 /// @brief	Main driver. Calls the 'matcher' function after reading in the parameters. 
-/// 		Reads in the params.ini config file and
+/// 		Reads in the parameter file and
 ///			assigns parameters to the code variables.
 /// @param	argc: Number of arguments
 /// @param	argv: Array of arguments

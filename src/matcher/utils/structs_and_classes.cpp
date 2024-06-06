@@ -5,12 +5,9 @@
 /// @date       June 2024
 
 #include <string>
-//#include "../../include/matcher/structs_and_classes.h"
-#include "../../include/matcher/structs_and_classes.h"
-//#include "../../include/matcher/utilities.h"
-#include "../../include/matcher/utilities.h"
-//#include "../../include/matcher/matcher_functions.h"
-#include "../../include/matcher/matcher_functions.h"
+#include "../../../include/matcher/structs_and_classes.h"
+#include "../../../include/matcher/utilities.h"
+#include "../../../include/matcher/matcher_functions.h"
 
 
 
@@ -33,7 +30,8 @@ Group_struct* create_group(std::string name)
 /// @param      childs_mass_frac_from_parent_arg: The mass fraction from child to parent
 /// @param      total_mass_arg: The total mass of the child parent instance
 /// @return
-ChildParentInstance::ChildParentInstance(std::string name_arg, double parents_mass_frac_to_child_arg, double childs_mass_frac_from_parent_arg, double total_mass_arg)
+ChildParentInstance::ChildParentInstance(std::string name_arg, double parents_mass_frac_to_child_arg,
+                                        double childs_mass_frac_from_parent_arg, double total_mass_arg)
 {
     name = name_arg;
     parents_mass_frac_to_child = parents_mass_frac_to_child_arg;
@@ -49,7 +47,8 @@ ChildParentInstance::ChildParentInstance(std::string name_arg, double parents_ma
 /// @param      pIDgen: The particle ID generator of the member cloud
 /// @param      masses_arg: The masses of the member cloud
 /// @return
-MemberCloud::MemberCloud(std::string name_arg, std::vector<double> pIDs, std::vector<double> pIDgen, std::vector<double> masses_arg)
+MemberCloud::MemberCloud(std::string name_arg, std::vector<double> pIDs, std::vector<double> pIDgen, 
+                        std::vector<double> masses_arg)
 {
     // Initialize the member cloud
     name = name_arg;
@@ -69,14 +68,7 @@ MemberCloud::MemberCloud(std::string name_arg, std::vector<double> pIDs, std::ve
                 int index = get_first_index(particleIDs, pIDs[i]);
                 masses[index] = masses[index] + masses_arg[i];
             }
-            //particleIDs.push_back(pIDs[i]);
-            //masses.push_back(masses_arg[i]);
         }
-
-        //else {
-        //    int index = get_first_index(particleIDs, pIDs[i]);
-        //    masses[index] = masses[index] + masses_arg[i];
-        //}
     }
     total_mass = sum_array(masses);
 }

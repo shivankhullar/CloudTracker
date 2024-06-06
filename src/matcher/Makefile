@@ -75,25 +75,25 @@ all: matcher
 
 
 ## matcher: Run the application 'matcher'
-matcher: matcher.o matcher_functions.o structs_and_classes.o read_params.o io.o utilities.o
+matcher: ./main/matcher.o ./main/matcher_functions.o ./utils/structs_and_classes.o ./utils/utilities.o ./io/read_params.o ./io/io.o 
 	${CXX} -I${HDF5_INC} ${HDF5_LIB} ${LDFLAGS} $^ -o $@ ${LDLIBS}
 
-matcher.o: matcher.cpp
+matcher.o: ./main/matcher.cpp
 	${CXX} ${CPPFLAGS} ${CXXFLAGS} -I${HDF5_INC} ${HDF5_LIB} ${LDFLAGS} -c -o $@ $^
 
-matcher_functions.o: matcher_functions.cpp ../../include/matcher/matcher_functions.h
+matcher_functions.o: ./main/matcher_functions.cpp ../../include/matcher/matcher_functions.h
 	${CXX} ${CPPFLAGS} ${CXXFLAGS} -I${HDF5_INC} ${HDF5_LIB} ${LDFLAGS} -c -o matcher_functions.o matcher_functions.cpp
 
-structs_and_classes.o: structs_and_classes.cpp ../../include/matcher/structs_and_classes.h
+structs_and_classes.o: ./utils/structs_and_classes.cpp ../../include/matcher/structs_and_classes.h
 	${CXX} ${CPPFLAGS} ${CXXFLAGS} -I${HDF5_INC} ${HDF5_LIB} ${LDFLAGS} -c -o structs_and_classes.o structs_and_classes.cpp
 
-read_params.o: read_params.cpp ../../include/matcher/read_params.h
+read_params.o: ./io/read_params.cpp ../../include/matcher/read_params.h
 	${CXX} ${CPPFLAGS} ${CXXFLAGS} -I${HDF5_INC} ${HDF5_LIB} ${LDFLAGS} -c -o read_params.o read_params.cpp
 
-io.o: io.cpp ../../include/matcher/io.h
+io.o: ./io/io.cpp ../../include/matcher/io.h
 	${CXX} ${CPPFLAGS} ${CXXFLAGS} -I${HDF5_INC} ${HDF5_LIB} ${LDFLAGS} -c -o io.o io.cpp
 
-utilities.o: utilities.cpp ../../include/matcher/utilities.h
+utilities.o: ./utils/utilities.cpp ../../include/matcher/utilities.h
 	${CXX} ${CPPFLAGS} ${CXXFLAGS} -I${HDF5_INC} ${HDF5_LIB} ${LDFLAGS} -c -o utilities.o utilities.cpp
 
 ## run: Run the matcher program
@@ -103,7 +103,7 @@ run:
 
 ## clean: remove intermediate generated files
 clean:
-	$(RM) matcher output.dat matcher.o matcher_functions.o structs_and_classes.o read_params.o io.o utilities.o
+	$(RM) matcher output.dat ./main/matcher.o ./main/matcher_functions.o ./utils/structs_and_classes.o ./utils/utilities.o ./io/read_params.o ./io/io.o 
 
 ## help: print all commented 'make' targets
 # (the sed command displays all lines from the Makefile that start with '##')

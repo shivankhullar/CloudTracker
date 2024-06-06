@@ -1,12 +1,17 @@
 /// @file       matcher.cpp 
-/// @brief      This file contains the utility functions for the matcher application.
-
+/// @brief      This file contains utility functions for the matcher application.
+///             This includes functions to check if a double exists in a vector, get the first index of a double in a vector,
+///             print a double array, print an int array, sum the elements of a double array, get the name of the snapshot part of a Cloud,
+///             find the number of clouds in a snapshot, and get the name of a snapshot as a string with leading zeros to make it a 3-digit number.
+///             If you are working with data that is not the default structure, you will have to alter the get_snapshot_name() and find_num_clouds() functions.
 /// @author     Shivan Khullar
 /// @date       June 2024
 
-#include "../../include/matcher/structs_and_classes.h"
+
+
 #include <string>
-#include "../../include/matcher/matcher_functions.h"
+#include "../../../include/matcher/structs_and_classes.h"
+#include "../../../include/matcher/matcher_functions.h"
 
 
 /// @brief      Check if a double exists in a vector
@@ -86,6 +91,11 @@ std::string get_snapshot_name(int i)
 }
 
 
+
+/// @brief Function to find the number of clouds in a snapshot
+/// @param snap_num : the snapshot number
+/// @param params : the parameters for matcher application (read from the .txt file in main/matcher.cpp)
+/// @return the number of clouds in the snapshot
 int find_num_clouds(int snap_num, Params &params)
 {
 	std::string fname = params.path+params.dat_filename_base_prefix+get_snapshot_name(snap_num)+params.dat_filename_base_suffix;
@@ -109,3 +119,4 @@ int find_num_clouds(int snap_num, Params &params)
         file.close();
         return c;
 }
+

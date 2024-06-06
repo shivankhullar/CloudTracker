@@ -3,7 +3,7 @@
 #include <sstream>
 #include <string>
 
-#include "read_params.h"
+#include "../../../include/matcher/read_params.h"
 
 void trim(std::string &s) {
     s.erase(s.begin(), std::find_if(s.begin(), s.end(), [](unsigned char ch) {
@@ -27,6 +27,7 @@ void printParams(const Params& params) {
     std::cout << "File Arch Cloud Subgroup: " << params.file_arch_cloud_subgroup << std::endl;
     std::cout << "File Arch Masses Field: " << params.file_arch_masses_field << std::endl;
     std::cout << "File Arch PIDs Field: " << params.file_arch_pIDs_field << std::endl;
+    std::cout << "File Arch pIDgen Field: " << params.file_arch_pIDgen_field << std::endl; 
     std::cout << "Write Filename Base Prefix: " << params.write_filename_base_prefix << std::endl;
     std::cout << "Write Filename Base Suffix: " << params.write_filename_base_suffix << std::endl;
     std::cout << "Particle Lower Limit: " << params.particle_lower_limit << std::endl;
@@ -60,6 +61,7 @@ bool parseParams(const std::string& filename, Params& params, const std::string&
             else if (key == "file_arch_cloud_subgroup") params.file_arch_cloud_subgroup = value;
             else if (key == "file_arch_masses_field") params.file_arch_masses_field = value;
             else if (key == "file_arch_pIDs_field") params.file_arch_pIDs_field = value;
+            else if (key == "file_arch_pIDgen_field") params.file_arch_pIDgen_field = value;
             else if (key == "write_filename_base_prefix") params.write_filename_base_prefix = value;
             else if (key == "write_filename_base_suffix") params.write_filename_base_suffix = "_"+name+value;
             else if (key == "particle_lower_limit") params.particle_lower_limit = std::stoi(value);

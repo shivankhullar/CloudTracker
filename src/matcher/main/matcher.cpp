@@ -20,13 +20,12 @@
 
 using namespace std;
 
-//#include "read_params.h"
-
-//#include <boost/program_options.hpp>
-//namespace po = boost::program_options;
-
-/// @brief	Main driver. Calls the 'matcher' function after reading in the parameters. Reads in the params.ini config file and
-///		assigns parameters to the code variables.
+/// @brief	Main driver. Calls the 'matcher' function after reading in the parameters. 
+/// 		Reads in the params.ini config file and
+///			assigns parameters to the code variables.
+/// @param	argc: Number of arguments
+/// @param	argv: Array of arguments
+/// @return	0 if successful, 1 if not
 int main(int argc, char** argv)
 {
 
@@ -43,28 +42,6 @@ int main(int argc, char** argv)
     }
 
     // Use the parsed params here
-    // matcher(params);
     printParams(params);
-    
-
-	//Params params;
-	//string name;
-	//name = "n10_alpha10";
-	//params.path = "../../m12i_res57000_nofb/CloudPhinderData/"+name+"/";
-	//params.first_snap = 591; params.last_snap = 614;
-	//params.cloud_prefix = "Cloud";
-	//params.dat_filename_base_prefix = "bound_";
-	//params.dat_filename_base_suffix = "_"+name+".dat";
-	//params.filename_base_prefix = "Clouds_";
-	//params.filename_base_suffix = "_"+name+".hdf5";
-	////params.path = "../sample_data/m12i_no_fb_3/n10_alpha2/";
-	//params.file_arch_root = "/";
-	//params.file_arch_cloud_subgroup = "PartType0";
-	//params.file_arch_masses_field = "Masses";
-	//params.file_arch_pIDs_field = "ParticleIDs";
-	//params.write_filename_base_prefix = "Tracked_Clouds_";
-	//params.write_filename_base_suffix = "_"+name+".hdf5";	
-	//params.particle_lower_limit = 32;
-	
 	matcher(params);
 }

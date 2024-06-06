@@ -1,5 +1,9 @@
 #include "matcher_functions.h"
 #include "structs_and_classes.h"
+#include "read_params.h"
+#include "io.h"
+#include "utilities.h"
+
 
 //#include <H5Cpp.h>
 #include <hdf5.h>

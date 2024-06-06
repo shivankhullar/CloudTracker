@@ -81,19 +81,19 @@ matcher: matcher.o matcher_functions.o structs_and_classes.o read_params.o io.o 
 matcher.o: matcher.cpp
 	${CXX} ${CPPFLAGS} ${CXXFLAGS} -I${HDF5_INC} ${HDF5_LIB} ${LDFLAGS} -c -o $@ $^
 
-matcher_functions.o: matcher_functions.cpp matcher_functions.h
+matcher_functions.o: matcher_functions.cpp ../../include/matcher/matcher_functions.h
 	${CXX} ${CPPFLAGS} ${CXXFLAGS} -I${HDF5_INC} ${HDF5_LIB} ${LDFLAGS} -c -o matcher_functions.o matcher_functions.cpp
 
-structs_and_classes.o: structs_and_classes.cpp structs_and_classes.h
+structs_and_classes.o: structs_and_classes.cpp ../../include/matcher/structs_and_classes.h
 	${CXX} ${CPPFLAGS} ${CXXFLAGS} -I${HDF5_INC} ${HDF5_LIB} ${LDFLAGS} -c -o structs_and_classes.o structs_and_classes.cpp
 
-read_params.o: read_params.cpp read_params.h
+read_params.o: read_params.cpp ../../include/matcher/read_params.h
 	${CXX} ${CPPFLAGS} ${CXXFLAGS} -I${HDF5_INC} ${HDF5_LIB} ${LDFLAGS} -c -o read_params.o read_params.cpp
 
-io.o: io.cpp io.h
+io.o: io.cpp ../../include/matcher/io.h
 	${CXX} ${CPPFLAGS} ${CXXFLAGS} -I${HDF5_INC} ${HDF5_LIB} ${LDFLAGS} -c -o io.o io.cpp
 
-utilities.o: utilities.cpp utilities.h
+utilities.o: utilities.cpp ../../include/matcher/utilities.h
 	${CXX} ${CPPFLAGS} ${CXXFLAGS} -I${HDF5_INC} ${HDF5_LIB} ${LDFLAGS} -c -o utilities.o utilities.cpp
 
 ## run: Run the matcher program

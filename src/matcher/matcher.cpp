@@ -12,11 +12,11 @@
 #include <hdf5.h>
 #include <vector>
 
-#include "structs_and_classes.h"
-#include "matcher_functions.h"
-#include "read_params.h"
-#include "io.h"
-#include "utilities.h"
+#include "../../include/matcher/structs_and_classes.h"
+#include "../../include/matcher/matcher_functions.h"
+#include "../../include/matcher/read_params.h"
+#include "../../include/matcher/io.h"
+#include "../../include/matcher/utilities.h"
 
 using namespace std;
 

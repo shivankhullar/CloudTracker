@@ -132,7 +132,6 @@ void writeGroupDataParents(hid_t group_id, const std::string& subgroup_name, con
 }
 
 
-
 std::vector<int> read_cloud_data_int(Params& params, int snap_num, const std::string& field_to_read, const std::string& cloud_name) {
     Group_struct* file_arch = create_group(params.file_arch_root);
     file_arch->subgroup = create_group(cloud_name);
@@ -205,7 +204,7 @@ std::vector<double> read_cloud_data_double(Params &params, int snap_num, std::st
         file_arch->subgroup->subgroup->subgroup = create_group(field_to_read);
         std::string fname = params.path+params.filename_base_prefix+get_snapshot_name(snap_num)+params.filename_base_suffix;
 	
-	hid_t file = H5Fopen (&fname[0], H5F_ACC_RDONLY, H5P_DEFAULT);
+	    hid_t file = H5Fopen (&fname[0], H5F_ACC_RDONLY, H5P_DEFAULT);
         //H5File file(fname, H5F_ACC_RDONLY);
         std::string root = file_arch->name;
         hid_t grp_root = H5Gopen(file, &root[0], H5P_DEFAULT);

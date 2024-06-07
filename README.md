@@ -1,8 +1,8 @@
 # CloudTracker
 
-CloudTracker is a tool designed for tracking collections of particles/cells in fluid simulations. 
+CloudTracker is a tool designed for tracking collections of particles/cells (clouds for the purposes of this code) in fluid simulations. 
 It's a tool that can be used in post processing to track collections that have already been identified. 
-You would have to first use some other tool to identify collections of particles/cells, save them in an HDF5 file 
+You would have to first use some other tool to identify collections of particles/cells in each snapshot, save them in an HDF5 file 
 with a specific format (see [Documentation](#documentation) for details.)
 It works in two steps: 1) It matches (see [Matcher](#matcher))
 
@@ -59,7 +59,15 @@ CloudTracker/
 ```
 
 ## Modules
-# Linker
-asfhousdhgiuadhf
 # Matcher
-Aasifhoadhfiausfh
+This part of the code will match clouds in subsequent snapshots by checking for the particles of each pair of clouds. 
+This is an $\mathcal{O}(n^2)$ calculation where $n$ denotes the number of clouds in a snapshot. 
+Fortunately, it is still very fast (thanks to being written in C++). This process is easily 
+parallelizable, but currently serial. Parallel support with OpenMP will be added in the future. 
+The matcher program will create HDF5 files which contain information about the children and the 
+amount of "mass" they derive from each of their parents (a parent is any cloud that donates
+at least one particle to the child cloud). It also contains information about the parents and the
+amount of "mass" they give to each of their child cloud. 
+
+# Linker
+This part of the code will link together the clouds that matcher matches. 

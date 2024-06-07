@@ -2,9 +2,9 @@
 
 
 //#include "../../include/linker/utilities.h"
-#include "utilities.h"
-#include "io.h"
-#include "read_params.h"
+#include "../../../include/linker/utilities.h"
+#include "../../../include/linker/io.h"
+#include "../../../include/linker/read_params.h"
 
 
 

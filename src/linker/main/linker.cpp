@@ -8,11 +8,11 @@
 #include <cstring>
 #include <fstream>
 
-#include "linker_functions.h"
-#include "structs_and_classes.h"
-#include "read_params.h"
-#include "utilities.h"
-#include "io.h"
+#include "../../../include/linker/linker_functions.h"
+#include "../../../include/linker/structs_and_classes.h"
+#include "../../../include/linker/read_params.h"
+#include "../../../include/linker/utilities.h"
+#include "../../../include/linker/io.h"
 
 using namespace std;
 

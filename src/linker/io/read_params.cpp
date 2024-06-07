@@ -3,7 +3,7 @@
 #include <sstream>
 #include <string>
 
-#include "read_params.h"
+#include "../../../include/linker/read_params.h"
 
 void trim(std::string &s) {
     s.erase(s.begin(), std::find_if(s.begin(), s.end(), [](unsigned char ch) {

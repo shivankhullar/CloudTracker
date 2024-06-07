@@ -1,8 +1,8 @@
 
-#include "io.h"
-#include "read_params.h"
-#include "structs_and_classes.h"
-#include "utilities.h"
+#include "../../../include/linker/io.h"
+#include "../../../include/linker/read_params.h"
+#include "../../../include/linker/structs_and_classes.h"
+#include "../../../include/linker/utilities.h"
 #include <fstream>
 #include <iostream>
 #include <string>

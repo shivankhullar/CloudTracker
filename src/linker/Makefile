@@ -83,29 +83,29 @@ endif
 all: linker
 
 ## gwaves: Run the linker application
-linker: linker.o linker_functions.o structs_and_classes.o utilities.o read_params.o io_hdf5.o io_txt.o
+linker: ./main/linker.o ./main/linker_functions.o ./utils/structs_and_classes.o ./utils/utilities.o ./io/read_params.o ./io/io_hdf5.o ./io/io_txt.o
 	${CXX} -I${HDF5_INC} ${HDF5_LIB} ${LDFLAGS} $^ -o $@ ${LDLIBS}
 
-linker.o: linker.cpp
+linker.o: ./main/linker.cpp
 	${CXX} ${CPPFLAGS} ${CXXFLAGS} -I${HDF5_INC} ${HDF5_LIB} ${LDFLAGS} -c -o $@ $^
 
-linker_functions.o: linker_functions.cpp linker_functions.h
-	${CXX} ${CPPFLAGS} ${CXXFLAGS} -I${HDF5_INC} ${HDF5_LIB} ${LDFLAGS} -c -o linker_functions.o linker_functions.cpp
+linker_functions.o: ./main/linker_functions.cpp ../../include/linker/linker_functions.h
+	${CXX} ${CPPFLAGS} ${CXXFLAGS} -I${HDF5_INC} ${HDF5_LIB} ${LDFLAGS} -c -o ./main/linker_functions.o linker_functions.cpp
 
-structs_and_classes.o: structs_and_classes.cpp structs_and_classes.h
-	${CXX} ${CPPFLAGS} ${CXXFLAGS} -I${HDF5_INC} ${HDF5_LIB} ${LDFLAGS} -c -o structs_and_classes.o structs_and_classes.cpp
+structs_and_classes.o: ./utils/structs_and_classes.cpp ../../include/linker/structs_and_classes.h
+	${CXX} ${CPPFLAGS} ${CXXFLAGS} -I${HDF5_INC} ${HDF5_LIB} ${LDFLAGS} -c -o ./utils/structs_and_classes.o structs_and_classes.cpp
 
-read_params.o: read_params.cpp read_params.h
-	${CXX} ${CPPFLAGS} ${CXXFLAGS} -I${HDF5_INC} ${HDF5_LIB} ${LDFLAGS} -c -o read_params.o read_params.cpp
+utilities.o: ./utils/utilities.cpp ../../include/linker/utilities.h
+	${CXX} ${CPPFLAGS} ${CXXFLAGS} -I${HDF5_INC} ${HDF5_LIB} ${LDFLAGS} -c -o ./utils/utilities.o utilities.cpp
 
-utilities.o: utilities.cpp utilities.h
-	${CXX} ${CPPFLAGS} ${CXXFLAGS} -I${HDF5_INC} ${HDF5_LIB} ${LDFLAGS} -c -o utilities.o utilities.cpp
+read_params.o: ./io/read_params.cpp ../../include/linker/read_params.h
+	${CXX} ${CPPFLAGS} ${CXXFLAGS} -I${HDF5_INC} ${HDF5_LIB} ${LDFLAGS} -c -o ./io/read_params.o ./io/read_params.cpp
 
-io_hdf5.o: io_hdf5.cpp io.h
-	${CXX} ${CPPFLAGS} ${CXXFLAGS} -I${HDF5_INC} ${HDF5_LIB} ${LDFLAGS} -c -o io_hdf5.o io_hdf5.cpp
+io_hdf5.o: ./io/io_hdf5.cpp ../../include/linker/io.h
+	${CXX} ${CPPFLAGS} ${CXXFLAGS} -I${HDF5_INC} ${HDF5_LIB} ${LDFLAGS} -c -o ./io/io_hdf5.o ./io/io_hdf5.cpp
 
-io_txt.o: io_txt.cpp io.h
-	${CXX} ${CPPFLAGS} ${CXXFLAGS} -I${HDF5_INC} ${HDF5_LIB} ${LDFLAGS} -c -o io_txt.o io_txt.cpp
+io_txt.o: ./io/io_txt.cpp ../../include/linker/io.h
+	${CXX} ${CPPFLAGS} ${CXXFLAGS} -I${HDF5_INC} ${HDF5_LIB} ${LDFLAGS} -c -o ./io/io_txt.o ./io/io_txt.cpp
 	
 ## run: Run the linker program
 run:
@@ -114,7 +114,7 @@ run:
 
 ## clean: remove intermediate generated files
 clean:
-	$(RM) linker output.dat linker.o linker_functions.o read_params.o structs_and_classes.o utilities.o io_hdf5.o io_txt.o
+	$(RM) linker output.dat ./main/linker.o ./main/linker_functions.o ./utils/structs_and_classes.o ./utils/utilities.o ./io/read_params.o ./io/io_hdf5.o ./io/io_txt.o
 
 ## help: print all commented 'make' targets
 # (the sed command displays all lines from the Makefile that start with '##')

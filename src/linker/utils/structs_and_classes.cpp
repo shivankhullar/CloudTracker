@@ -1,9 +1,9 @@
 //#include "../../../include/linker/structs_and_classes.h"
 //#include "../../../include/linker/linker_functions.h"
 
-#include "structs_and_classes.h"
-#include "linker_functions.h"
-#include "utilities.h"
+#include "../../../include/linker/structs_and_classes.h"
+#include "../../../include/linker/linker_functions.h"
+#include "../../../include/linker/utilities.h"
 
 
 

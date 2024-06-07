@@ -25,7 +25,8 @@ To install CloudTracker, just clone the repository:
 **Clone the repository**:
     ```
     git clone https://github.com/yourusername/CloudTracker.git
-    
+    ```
+    ```
     cd CloudTracker
     ```
 You would have to provide 

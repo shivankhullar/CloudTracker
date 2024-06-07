@@ -3,7 +3,7 @@
 CloudTracker is a tool designed for tracking collections of particles/cells in fluid simulations. 
 It's a tool that can be used in post processing to track collections that have already been identified. 
 You would have to first use some other tool to identify collections of particles/cells, save them in an HDF5 file 
-with a specific format (see (#documentation) for details.)
+with a specific format (see [Documentation](#documentation) for details.)
 It works in two steps: 1)  
 
 

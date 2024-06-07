@@ -44,17 +44,18 @@ After building the project, you can run the main executables located in the `bin
 CloudTracker/
 ├── docs/ # Documentation files
 ├── src/ # Source code files
-│ ├── linker/ # Linker related source code
-│ │ ├── io/ # I/O handling code for linker
-│ │ ├── utils/ # Utility functions for linker
-│ │ └── main/ # Main linker functionality
-│ ├── matcher/ # Matcher related source code
-│ │ ├── io/ # I/O handling code for matcher
-│ │ ├── utils/ # Utility functions for matcher
-│ │ └── main/ # Main matcher functionality
-│ ├── Makefile.systype # Makefile for system type detection
+│   ├── linker/ # Linker related source code
+│   │   ├── io/ # I/O handling code for linker
+│   │   ├── utils/ # Utility functions for linker
+│   │   └── main/ # Main linker functionality
+│   ├── matcher/ # Matcher related source code
+│   │   ├── io/ # I/O handling code for matcher
+│   │   ├── utils/ # Utility functions for matcher
+│   │   └── main/ # Main matcher functionality
+│   ├── Makefile.systype # Makefile for system type detection
 ├── Makefile # Makefile for building the project
 └── README.md # Project README file
+
 
 
 ## Modules

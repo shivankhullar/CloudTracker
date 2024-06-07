@@ -19,5 +19,7 @@ linker/linker2*
 linker/run_linker*
 matcher/run_matcher*
 matcher/run_cor*
+src/linker/linker
+src/matcher/matcher
 .DS_Store
 *.zip

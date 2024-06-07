@@ -1,6 +1,6 @@
-path= ../../
-first_snap = 591
-last_snap = 615
+path= /Volumes/Elements/FIRE/m12i_final/
+first_snap = 600
+last_snap = 650
 cloud_prefix = Cloud
 dat_filename_base_prefix = bound_
 dat_filename_base_suffix = .dat
@@ -10,9 +10,9 @@ file_arch_root = /
 file_arch_cloud_subgroup = PartType0
 file_arch_masses_field = Masses
 file_arch_pIDs_field = ParticleIDs
-write_filename_base_prefix = Tracked_Clouds_
+write_filename_base_prefix = Test_Tracked_Clouds_
 write_filename_base_suffix = .hdf5
 particle_lower_limit = 32
 threshold_frac_for_child = 0.3
-linker_output_filename_prefix = Linked_Clouds_
+linker_output_filename_prefix = Test_Linked_Clouds_
 

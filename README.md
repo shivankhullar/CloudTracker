@@ -41,22 +41,22 @@ You would have to provide
 After building the project, you can run the main executables located in the `bin` directory. Usage details for each module are provided below.
 
 ## Project Structure
+```
 CloudTracker/
-├── docs/                    # Documentation files
-├── src/                     # Source code files
-│   ├── linker/              # Linker related source code
-│   │   ├── io/              # I/O handling code for linker
-│   │   ├── utils/           # Utility functions for linker
-│   │   └── main/            # Main linker functionality
-│   ├── matcher/             # Matcher related source code
-│   │   ├── io/              # I/O handling code for matcher
-│   │   ├── utils/           # Utility functions for matcher
-│   │   └── main/            # Main matcher functionality
-│   ├── Makefile.systype     # Makefile for system type detection
-├── Makefile                 # Makefile for building the project
-└── README.md                # Project README file
-
-
+├── docs/                   # Documentation files
+├── src/                    # Source code files
+│   ├── linker/             # Linker related source code
+│   │   ├── io/             # I/O handling code for linker
+│   │   ├── utils/          # Utility functions for linker
+│   │   └── main/           # Main linker functionality
+│   ├── matcher/            # Matcher related source code
+│   │   ├── io/             # I/O handling code for matcher
+│   │   ├── utils/          # Utility functions for matcher
+│   │   └── main/           # Main matcher functionality
+│   ├── Makefile.systype    # Makefile for system type detection
+├── Makefile                # Makefile for building the project
+└── README.md               # Project README file
+```
 
 ## Modules
 # Linker

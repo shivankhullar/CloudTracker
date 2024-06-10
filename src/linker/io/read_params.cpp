@@ -1,10 +1,23 @@
+/// @file       read_params.cpp
+/// @brief      Contains functions to read parameters from a file
+///             The parameters are stored in a text file and read into a struct
+///             Linker then reads these parameters to perform the linking process
+///             
+/// @author     Shivan Khullar
+/// @date       June 2024
+
+
+
 #include <iostream>
 #include <fstream>
 #include <sstream>
 #include <string>
-
 #include "../../../include/linker/read_params.h"
 
+
+
+/// @brief      Function to remove leading and trailing whitespaces from a string
+/// @param s    The string to trim
 void trim(std::string &s) {
     s.erase(s.begin(), std::find_if(s.begin(), s.end(), [](unsigned char ch) {
         return !std::isspace(ch);
@@ -15,6 +28,9 @@ void trim(std::string &s) {
 }
 
 
+
+/// @brief          Function to print the parameters
+/// @param params   The parameters struct
 void printParams(const Params& params) {
     std::cout << "Path: " << params.path << std::endl;
     std::cout << "First Snap: " << params.first_snap << std::endl;
@@ -36,6 +52,13 @@ void printParams(const Params& params) {
 }
 
 
+
+/// @brief          Function to parse the parameters from a file
+/// @param filename The name of the file containing the parameters
+/// @param params   The parameters struct
+/// @param name     The name of the parameter
+/// @param sim_name The name of the simulation
+/// @return         True if the parameters are parsed successfully, false otherwise
 bool parseParams(const std::string& filename, Params& params, const std::string& name, const std::string& sim_name) {
     std::ifstream file(filename);
     if (!file.is_open()) {

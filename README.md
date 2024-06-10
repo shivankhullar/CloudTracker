@@ -1,11 +1,14 @@
 # CloudTracker
 
-CloudTracker is a tool designed for tracking collections of particles/cells (called clouds for the purposes of this code) in fluid simulations. 
+CloudTracker is a tool designed for tracking collections of particles/cells (called clouds for the purposes of this code) in fluid simulations. Originally designed for galaxy formation simulations, but can be applied to other contexts easily.
 It's a tool that can be used in post processing to track collections that have already been identified. 
-You would have to first use some other tool to identify collections of particles/cells in each snapshot, save them in an HDF5 file 
-with a specific format (see [Documentation](#documentation) for details.)
-It works in two steps: 1) It matches (see [Matcher](#matcher))
+You would have to first use some other tool to identify collections of particles/cells in each snapshot, save them in an HDF5 file with a specific format (see [Documentation](#documentation) for details.)
 
+It works in two steps: 
+1) It matches (see [Matcher](#matcher)) clouds in two snapshots and identifies parent-child edges (if you think of it as a graph). It currently does so for consecutive snapshots, but the code can be modified easily to have arbitrary spacing between snapshots.
+2) It links (see [Linker](#linker)) clouds identified as a parent-child pair (a parent can have more than one child, see below for details on the algorithm). The code follows the algorithm listed below, but would have to be modified if you want a different method. One can write python code to work with matcher outputs and that may be easier if you want a different way of linking clouds together in chains.  
+
+The code has been divided into these two parts so that it is easier to maintain more control over each part of the process. It is useful if someone wants to use just a part of the code (like the matcher), but wants to define their own way of linking entities together.
 
 ## Table of Contents
 - [Installation](#installation)

@@ -122,7 +122,7 @@ Directory structure needed:
 ```
 
 
-Here's an example of the matcher parameter file matcher_params.txt
+Here's an example of the matcher parameter file matcher_params.txt:
 ```
 path= ./ABC/PQR/                                      # Path to where the simulation UVW is
 first_snap = 100                                      # Modify as needed
@@ -142,7 +142,7 @@ write_filename_base_suffix = .hdf5                    # Output filename suffix f
 particle_lower_limit = 32                             # To exclude clouds with less than a certain number of cells/particles 
 ```
 
-The linker parameter file is exactly identical, except for these additions
+The linker parameter file is exactly identical, except for these additions:
 ```
 threshold_frac_for_child = 0.3                        # Decides what fraction of mass should be contained in a child for it to be considered at all
 linker_output_filename_prefix = Linked_Clouds_        # Prefix for the output file. Output is stored in the same directory that the data is in.

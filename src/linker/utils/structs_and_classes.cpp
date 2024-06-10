@@ -1,5 +1,10 @@
-//#include "../../../include/linker/structs_and_classes.h"
-//#include "../../../include/linker/linker_functions.h"
+/// @file       structs_and_classes.cpp 
+/// @brief      Contains the structs and classes used in the linker program.
+///              
+/// @author     Shivan Khullar
+/// @date       June 2024
+
+
 
 #include "../../../include/linker/structs_and_classes.h"
 #include "../../../include/linker/linker_functions.h"

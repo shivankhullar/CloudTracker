@@ -1,13 +1,26 @@
+/// @file       utilities.cpp 
+/// @brief      Contains some generic utilities like finding the number 
+///             of clouds in a snapshot, getting the name of the snapshot
+///             or getting the name of the cloud if you have a number.
+///             Also contains functions for checking two arrays and seeing
+///             whether they have something in common, and getting the number
+///             of particles in a cloud.
+///              
+/// @author     Shivan Khullar
+/// @date       June 2024
 
 
 
-//#include "../../include/linker/utilities.h"
 #include "../../../include/linker/utilities.h"
 #include "../../../include/linker/io.h"
 #include "../../../include/linker/read_params.h"
 
 
 
+/// @brief      Function to obtain the snapshot name by adding 
+///             required number of zeros
+/// @param i    The snapshot number
+/// @return 
 std::string get_snapshot_name(int i)
 {
         std::string name;
@@ -17,6 +30,13 @@ std::string get_snapshot_name(int i)
         return name;
 }
 
+
+
+/// @brief              Function to get the cloud name by adding 
+///                     required number of zeros
+/// @param i            The cloud number
+/// @param params       The parameters struct
+/// @return             The cloud name
 std::string get_cloud_name(int i, Params &params)
 {
         std::string cloud_name;
@@ -29,6 +49,12 @@ std::string get_cloud_name(int i, Params &params)
         return cloud_name;
 }
 
+
+
+/// @brief              Function to find the number of clouds in a snapshot
+/// @param snap_num     The snapshot number
+/// @param params       The parameters struct
+/// @return             The number of clouds in the snapshot
 int find_num_clouds(int snap_num, Params &params)
 {
         std::string fname = params.path+params.dat_filename_base_prefix+get_snapshot_name(snap_num)+params.dat_filename_base_suffix;
@@ -55,6 +81,10 @@ int find_num_clouds(int snap_num, Params &params)
 
 
 
+/// @brief              Function to check if a number exists in a vector
+/// @param a            The vector
+/// @param b            The number to check
+/// @return             The number of times the number exists in the vector
 int check_if_exists(std::vector<double> a, double b)
 {
         int c = 0;
@@ -66,6 +96,12 @@ int check_if_exists(std::vector<double> a, double b)
 }
 
 
+
+/// @brief              Function to get the number of particles in a cloud
+/// @param params       The parameters struct
+/// @param snap_num     The snapshot number
+/// @param cloud_name   The cloud name
+/// @return             The number of particles in the cloud
 int get_num_particles(Params &params, int snap_num, std::string cloud_name)
 {
         std::vector<double> pIDs = read_cloud_data_double(params, snap_num, params.file_arch_masses_field, cloud_name);

@@ -1,3 +1,9 @@
+/// @file       linker.cpp 
+/// @brief      Main driver for the linker part of the code 
+///             which links clouds in different snapshots together.
+///              
+/// @author     Shivan Khullar
+/// @date       June 2024
 
 #include <hdf5.h>
 #include <vector>
@@ -16,6 +22,12 @@
 
 using namespace std;
 
+
+
+/// @brief              Main driver function
+/// @param argc         number of command line arguments
+/// @param argv         command line arguments as strings
+/// @return 
 int main(int argc, char* argv[])
 {
         if (argc != 4) {

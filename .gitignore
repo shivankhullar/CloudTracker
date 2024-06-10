@@ -24,7 +24,6 @@ src/matcher/matcher
 latex/
 html/
 Doxyfile.bak
-Documentation.mk
 backup.txt
 .DS_Store
 *.zip

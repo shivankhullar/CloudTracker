@@ -26,5 +26,6 @@ html/
 Doxyfile.bak
 backup.txt
 /scripts/
+/setup_scripts/
 .DS_Store
 *.zip

@@ -108,7 +108,7 @@ You also need to have an auxiliary file (it can be a simple .txt file) which con
 It is used in counting the total number of clouds quickly.
 The code will count each line that doesn't start with ```#```. It doesn't matter what is contained in that file, as long as the number of lines 
 match the total number of clouds in the snapshot.
-You can either modify the ```find_num_clouds()``` function to calculate the total number of clouds, or just make a file with the same 
+You can either modify the ```find_num_clouds()``` function to calculate the total number of clouds, or just make a file like I described above. 
 
 Directory structure needed:
 ```

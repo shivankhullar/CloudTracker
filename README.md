@@ -63,6 +63,8 @@ The matcher program will create HDF5 files which contain information about the c
 amount of "mass" they derive from each of their parents (a parent is any cloud that donates
 at least one particle to the child cloud). It also contains information about the parents and the
 amount of "mass" they give to each of their child cloud. 
+If you want CloudTracker to just match based on number and not masses, 
+set up your masses array in the input file such that it is the same value for each cell/particle.
 
 ### Linker
 This part of the code will link together the clouds that matcher matches. The exact algorithm is described in a 
@@ -102,9 +104,10 @@ Filename:
 ```
 where ```yyy``` is a number that corresponds to the snapshot. 
 
-You also need to have an auxiliary file which contains information about your collections of particles/cells. 
+You also need to have an auxiliary file (it can be a simple .txt file) which contains information about your collections of particles/cells. 
 It is used in counting the total number of clouds quickly.
-The code will count each line that doesn't start with ```#```. It doesn't matter what is contained in that file.
+The code will count each line that doesn't start with ```#```. It doesn't matter what is contained in that file, as long as the number of lines 
+match the total number of clouds in the snapshot.
 You can either modify the ```find_num_clouds()``` function to calculate the total number of clouds, or just make a file with the same 
 
 Directory structure needed:
@@ -114,8 +117,8 @@ Directory structure needed:
 |---|---|UVW
 |---|---|---|CloudPhinderData
 |---|---|---|---|DEF
-|---|---|---|---|---|JKL_yyy_.hdf5
-|---|---|---|---|---|MNO_.dat
+|---|---|---|---|---|JKL_yyy_DEF.hdf5
+|---|---|---|---|---|MNO_yyy_DEF.dat
 ```
 
 
@@ -125,27 +128,34 @@ path= ./ABC/PQR/                                      # Path to where the simula
 first_snap = 100                                      # Modify as needed
 last_snap = 200                                       # Modify as needed
 cloud_prefix = Cloud                                  # This is the prefix for the names of the clouds
-dat_filename_base_prefix = MNO_                     # This is the prefix for an auxiliary file
-dat_filename_base_suffix = .dat                       # This is the suffix for the auxiliary file 
-filename_base_prefix = JKL_
-filename_base_suffix = .hdf5
-file_arch_root = /
-file_arch_cloud_subgroup = ParticleSubgroup
-file_arch_masses_field = Masses
-file_arch_pIDs_field = ParticleIDs
+dat_filename_base_prefix = MNO_                       # This is the prefix for the .dat auxiliary file
+dat_filename_base_suffix = .dat                       # This is the suffix for the .dat auxiliary file 
+filename_base_prefix = JKL_                           # Prefix for the .hdf5 file
+filename_base_suffix = .hdf5                          # Suffix for the .hdf5 file
+file_arch_root = /                                    # Structure of the hdf5 file (see above for the hdf5 file structure)
+file_arch_cloud_subgroup = ParticleSubgroup           # Name of subgroup which contains the datasets
+file_arch_masses_field = Masses                       # Name of the dataset that contains the masses of the clouds
+file_arch_pIDs_field = ParticleIDs                    # Name of the dataset that contains the particleIDs of the clouds
 file_arch_pIDgen_field = ParticleIDGenerationNumber   # Field not used currently
 write_filename_base_prefix = Tracked_Clouds_          # Output filename prefix for the file produced by matcher
 write_filename_base_suffix = .hdf5                    # Output filename suffix for the file produced by matcher
-particle_lower_limit = 32                             #
+particle_lower_limit = 32                             # To exclude clouds with less than a certain number of cells/particles 
 ```
 
-Matcher will then create hdf5 files and save it in the directory the cloud data is in ```DEF``` in our example above. 
-
-Once you have everything configured, you 
-```sh
-make 
+The linker parameter file is exactly identical, except for these additions
+```
+threshold_frac_for_child = 0.3                        # Decides what fraction of mass should be contained in a child for it to be considered at all
+linker_output_filename_prefix = Linked_Clouds_        # Prefix for the output file. Output is stored in the same directory that the data is in.
 ```
 
+Matcher will then create hdf5 files and save it in the directory the cloud data is in, ```DEF``` in our example above. 
+
+Once you have everything configured, you can run matcher or linker by doing 
 ```
 ./matcher <config_filename> <name> <sim_name>
 ```
+or 
+```
+./linker <config_filename> <name> <sim_name>
+```
+where ```<name>``` is ```DEF``` and ```<sim_name>``` is ```UVW```. ```<config_filename>``` is the .txt parameter file defined above. 

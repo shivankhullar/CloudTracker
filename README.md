@@ -89,27 +89,45 @@ make -f Documentation.mk
 
 ## Usage
 
-CloudTracker is designed to work with a certain convention for the ```input``` files. Here's the HDF5 structure for input files:
+CloudTracker is designed to work with a certain convention for the input files. Here's the HDF5 structure for input files:
 
 ```
 Filename: 
-"Clouds_600_n10_alpha2.hdf5"
+"JKL_yyy_n10_alpha2.hdf5"
 |GROUP "/" 
 |---|GROUP "CloudXYZ" 
 |---|---|GROUP "ParticleSubgroup" 
 |---|---|---|DATASET "Masses" 
 |---|---|---|DATASET "ParticleIDs"
 ```
+where ```yyy``` is a number that corresponds to the snapshot. 
+
+You also need to have an auxiliary file which contains information about your collections of particles/cells. 
+It is used in counting the total number of clouds quickly.
+The code will count each line that doesn't start with ```#```. It doesn't matter what is contained in that file.
+You can either modify the ```find_num_clouds()``` function to calculate the total number of clouds, or just make a file with the same 
+
+Directory structure needed:
+```
+|ABC
+|---|PQR 
+|---|---|UVW
+|---|---|---|CloudPhinderData
+|---|---|---|---|DEF
+|---|---|---|---|---|JKL_yyy_.hdf5
+|---|---|---|---|---|MNO_.dat
+```
+
 
 Here's an example of the matcher parameter file matcher_params.txt
 ```
-path= ../../../../FIRE/m12i_final/                    # Path to where the 
-first_snap = 600
-last_snap = 601
-cloud_prefix = Cloud
-dat_filename_base_prefix = bound_
-dat_filename_base_suffix = .dat
-filename_base_prefix = Clouds_
+path= ./ABC/PQR/                                      # Path to where the simulation UVW is
+first_snap = 100                                      # Modify as needed
+last_snap = 200                                       # Modify as needed
+cloud_prefix = Cloud                                  # This is the prefix for the names of the clouds
+dat_filename_base_prefix = MNO_                     # This is the prefix for an auxiliary file
+dat_filename_base_suffix = .dat                       # This is the suffix for the auxiliary file 
+filename_base_prefix = JKL_
 filename_base_suffix = .hdf5
 file_arch_root = /
 file_arch_cloud_subgroup = ParticleSubgroup
@@ -121,9 +139,13 @@ write_filename_base_suffix = .hdf5                    # Output filename suffix f
 particle_lower_limit = 32                             #
 ```
 
-Matcher will then create 
+Matcher will then create hdf5 files and save it in the directory the cloud data is in ```DEF``` in our example above. 
 
 Once you have everything configured, you 
 ```sh
 make 
+```
+
+```
+./matcher <config_filename> <name> <sim_name>
 ```

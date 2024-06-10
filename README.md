@@ -18,8 +18,6 @@ The code has been divided into these two parts so that it is easier to maintain 
   - [Linker](#linker)
   - [Matcher](#matcher)
 - [Documentation](#documentation)
-- [Testing](#testing)
-- [Contributing](#contributing)
 
 ## Installation
 To install CloudTracker, just clone the repository:
@@ -27,33 +25,37 @@ To install CloudTracker, just clone the repository:
 git clone https://github.com/yourusername/CloudTracker.git
 cd CloudTracker
 ```
+You will have to configure the Makefile and add the paths to the required libraries. Use Makefile.systype and Makefile to store settings for your machine. If you're running this on a Mac, the default paths provided should work if you install hdf5 by doing
+```
+brew install hdf5
+```
+
 ## Usage
 
+Once you have everything configured, you 
+```sh
+make 
+```
 
-
-**Build the project**:
-    ```sh
-    make 
-    ```
-
-After building the project, you can run the main executables located in the `bin` directory. Usage details for each module are provided below.
 
 ## Project Structure
 ```
-CloudTracker/
-├── docs/                   # Documentation files
-├── src/                    # Source code files
-│   ├── linker/             # Linker related source code
-│   │   ├── io/             # I/O handling code for linker
-│   │   ├── utils/          # Utility functions for linker
-│   │   └── main/           # Main linker functionality
-│   ├── matcher/            # Matcher related source code
-│   │   ├── io/             # I/O handling code for matcher
-│   │   ├── utils/          # Utility functions for matcher
-│   │   └── main/           # Main matcher functionality
-│   ├── Makefile.systype    # Makefile for system type detection
-├── Makefile                # Makefile for building the project
-└── README.md               # Project README file
+|CloudTracker/
+|---|include/             # Contains header files
+|---|docs/                # Documentation files
+|---|src/                 # Source code files
+|   |---|linker/          # Linker related source code
+|   |   |---|io/          # I/O handling code for linker
+|   |   |---|utils/       # Utility functions for linker
+|   |   |---|main/        # Main linker functionality
+|   |   |---|Makefile     # Makefile for building the linker program
+|   |---|matcher/         # Matcher related source code
+|   |   |---|io/          # I/O handling code for matcher
+|   |   |---|utils/       # Utility functions for matcher
+|   |   |---|main/        # Main matcher functionality
+|   |   |---|Makefile     # Makefile for building the matcher program
+|   |---|Makefile.systype # Makefile for system type detection
+|---|README.md            # Project README file
 ```
 
 ## Modules

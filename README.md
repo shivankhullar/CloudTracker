@@ -12,12 +12,13 @@ The code has been divided into these two parts so that it is easier to maintain 
 
 ## Table of Contents
 - [Installation](#installation)
-- [Usage](#usage)
 - [Project Structure](#project-structure)
 - [Modules](#modules)
   - [Linker](#linker)
   - [Matcher](#matcher)
 - [Documentation](#documentation)
+- [Usage](#usage)
+
 
 ## Installation
 To install CloudTracker, just clone the repository:
@@ -28,13 +29,6 @@ cd CloudTracker
 You will have to configure the Makefile and add the paths to the required libraries. Use Makefile.systype and Makefile to store settings for your machine. If you're running this on a Mac, the default paths provided should work if you install hdf5 by doing
 ```
 brew install hdf5
-```
-
-## Usage
-
-Once you have everything configured, you 
-```sh
-make 
 ```
 
 
@@ -56,6 +50,7 @@ make
 |   |   |---|Makefile     # Makefile for building the matcher program
 |   |---|Makefile.systype # Makefile for system type detection
 |---|README.md            # Project README file
+|---|Documentation.mk     # Makefile to generate reference manual
 ```
 
 ## Modules
@@ -80,3 +75,55 @@ companion paper, but briefly it proceeds as follows:
 - If there are clouds in snapshot B that are not a descendant of any cloud X in snapshot A, then add them to THE LIST. 
 
 In this method of linking clouds, if two clouds undergo a merger, we consider the less massive cloud to be dead.
+
+
+## Documentation
+
+CloudTracker comes with Doxygen support. You can find a reference manual in the *docs* directory. 
+If you want to create that from scratch, a Documentation.mk file is provided. You can generate the manual by doing
+```
+make -f Documentation.mk
+```
+
+
+
+## Usage
+
+CloudTracker is designed to work with a certain convention for the ```input``` files. Here's the HDF5 structure for input files:
+
+```
+Filename: 
+"Clouds_600_n10_alpha2.hdf5"
+|GROUP "/" 
+|---|GROUP "CloudXYZ" 
+|---|---|GROUP "ParticleSubgroup" 
+|---|---|---|DATASET "Masses" 
+|---|---|---|DATASET "ParticleIDs"
+```
+
+Here's an example of the matcher parameter file matcher_params.txt
+```
+path= ../../../../FIRE/m12i_final/                    # Path to where the 
+first_snap = 600
+last_snap = 601
+cloud_prefix = Cloud
+dat_filename_base_prefix = bound_
+dat_filename_base_suffix = .dat
+filename_base_prefix = Clouds_
+filename_base_suffix = .hdf5
+file_arch_root = /
+file_arch_cloud_subgroup = ParticleSubgroup
+file_arch_masses_field = Masses
+file_arch_pIDs_field = ParticleIDs
+file_arch_pIDgen_field = ParticleIDGenerationNumber   # Field not used currently
+write_filename_base_prefix = Tracked_Clouds_          # Output filename prefix for the file produced by matcher
+write_filename_base_suffix = .hdf5                    # Output filename suffix for the file produced by matcher
+particle_lower_limit = 32                             #
+```
+
+Matcher will then create 
+
+Once you have everything configured, you 
+```sh
+make 
+```

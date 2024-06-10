@@ -1,3 +1,11 @@
+/// @file       linker_functions.cpp 
+/// @brief      Contains the functions used in linking the clouds together.
+///              
+/// @author     Shivan Khullar
+/// @date       June 2024
+
+
+
 #include "../../../include/linker/linker_functions.h"
 #include "../../../include/linker/read_params.h"
 #include "../../../include/linker/structs_and_classes.h"
@@ -5,20 +13,35 @@
 #include "../../../include/linker/io.h"
 
 
+
+/// @brief              Loads a cloud into the cloudlist 
+///                     (the cloudlist is a list of all clouds,
+///                      not just tracked ones)
+/// @param cloud_list   The list of cloud objects
+/// @param cloud        The cloud object to be added to the list
 void load_to_cloudlist(std::vector<CloudStruct> &cloud_list, CloudStruct &cloud)
 {
         for (int i=0; i<cloud_list.size(); i++)
         {
+                // Check if cloud exists in the list already
                 if (cloud.final_name.compare(cloud_list[i].final_name)==0)
                 {       
                         std::cout << "This cloud already exists in cloud_list" << std::endl;
                          return;
                 }
         }
+        // Doesn't exist, add to list
 	cloud_list.push_back(cloud);
         std::cout << "Added cloud " << cloud.final_name << " to cloud_list. Size: " << cloud_list.size() << "\n" << std::endl;
 }
 
+
+
+/// @brief                      Loads a cloud into the tracked cloud list
+/// @param tracked_cloud_list   The list of tracked cloud objects
+/// @param cloud                The cloud to be added to the list
+/// @param key                  Key to signify if this cloud is part of a chain
+/// @param index                This specifies which generation the cloud belongs to
 void load_to_tracked_cloud_list(std::vector<std::vector<CloudStruct>> &tracked_cloud_list, CloudStruct &cloud, std::string key, int index)
 {
         if (key=="new_gen")
@@ -33,6 +56,22 @@ void load_to_tracked_cloud_list(std::vector<std::vector<CloudStruct>> &tracked_c
         }
 }
 
+
+
+/// @brief                              This function finds the "proper child" of any cloud X
+/// @param child_list_names             This is a list of all clouds that are children of the cloud X
+/// @param child_list_fracs             This is a list of all the fractions of mass child clouds have derived from 
+///                                     the parent cloud
+/// @param child_list_names_original    This is the original list of child cloud names, needed because this function
+///                                     is recursive and we delete the children if they have already been added in 
+///                                     the cloud list (not the tracked cloud list, the other one)
+/// @param cloud_list                   This is the list of all clouds (not just the tracked clouds)
+/// @param index_to_omit                If there is a cloud in the child list to omit. Used in recurrent calls to ignore
+///                                     a child of a more massive parent if it is the proper child
+/// @param snap_num                     The snapshot number of the cloud X
+/// @param params                       The params class object. Needed because we have to 
+/// @return                             Return the index of the proper child amongst all the child clouds 
+///                                     of cloud X. 
 int find_proper_child(std::vector<std::string> &child_list_names, std::vector<double> &child_list_fracs, std::vector<std::string> &child_list_names_original,
                         std::vector<CloudStruct> &cloud_list, int index_to_omit, int snap_num, Params &params)
 {
@@ -54,10 +93,11 @@ int find_proper_child(std::vector<std::string> &child_list_names, std::vector<do
         }
 
 
-
+        // Initialize in case no proper child is found
         int max_index = -1;
         double max_fraction = -1.0;
 
+        // Find the cloud with the highest fraction of mass from the parent
         for (int i = 0; i < u.size(); i++) {
                 //if (i == index_to_omit || child_list_fracs[i] < params.threshold_frac_for_child) {
                 //continue;  // Skip the current iteration if it's the omitted index or the fraction is below the threshold
@@ -90,11 +130,6 @@ int find_proper_child(std::vector<std::string> &child_list_names, std::vector<do
         }
         else {
                 std::cout << "No match found in cloudlist for: " << v[max_index] << std::endl;
-                // Print the last 10 elements of cloud_list
-                std::cout << "Last 10 elements of cloud_list: " << std::endl;
-                for (int i=9; i>=0; i--) {
-                        std::cout << cloud_list[cloud_list.size()-i-1].final_name << std::endl;
-                }
                 // Compare the cloud names in v and child_list_names to identify the index in the child_list_names array.
                 for (int i=0; i<child_list_names_original.size(); i++)
                 {
@@ -107,23 +142,16 @@ int find_proper_child(std::vector<std::string> &child_list_names, std::vector<do
                 
         }
 
-        // This was the code that wasn't working. I still don't get why it won't compare the strings properly and go inside the loop.
-        //for (int i = 0; i < cloud_list.size(); i++) {
-        //        //if (cloud_list[i].final_name.compare(compare_name) == 0) {
-        //        if (compare_name.compare(cloud_list[i].final_name) == 0) {
-        //        std::cout << "Child cloud: " << child_list_names[max_index] << " has already been assigned to a chain." << std::endl;
-        //        return find_proper_child(child_list_names, child_list_fracs, cloud_list, max_index, snap_num, params);
-        //        }
-        //        else {
-        //        std::cout << "No match found in cloudlist for: " << child_list_names[max_index] << std::endl;
-        //        return max_index;  // Return the index of the proper child}
-        //        }
-        //}
-
         return max_index;  // Return the index of the proper child
 }
 
 
+
+/// @brief              This is a function to check if a cloud already 
+///                     exists in the cloud list
+/// @param cloud        The cloud to check for
+/// @param cloud_list   The cloud list of all clouds to check in
+/// @return             Return 1 if found
 int check_if_cloud_exists_in_list(CloudStruct &cloud, std::vector<CloudStruct> &cloud_list)
 {
         int flag = 0;
@@ -136,10 +164,10 @@ int check_if_cloud_exists_in_list(CloudStruct &cloud, std::vector<CloudStruct> &
 
 
 
-// Slight re-write, because earlier version had a bug.
 
-// @brief: This function links all the clouds together.
-// @param: The parameter struct which contains meta info.
+/// @brief              This function links all the clouds together.
+/// @param              The parameter struct which contains meta info.
+/// @return
 void linker(Params &params)
 {
         // Initializing the tracked_cloud_list and cloud_list vectors of cloudstructs. 

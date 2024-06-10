@@ -91,11 +91,12 @@ make -f Documentation.mk
 
 ## Usage
 
-CloudTracker is designed to work with a certain convention for the input files. Here's the HDF5 structure for input files:
+CloudTracker is designed to work with a certain convention for the input files. Read this whole section for it to make sense, variable names are not defined in order.
+Here's the HDF5 structure for input files:
 
 ```
 Filename: 
-"JKL_yyy_n10_alpha2.hdf5"
+"JKL_yyy_DEF.hdf5"
 |GROUP "/" 
 |---|GROUP "CloudXYZ" 
 |---|---|GROUP "ParticleSubgroup" 
@@ -137,7 +138,7 @@ file_arch_cloud_subgroup = ParticleSubgroup           # Name of subgroup which c
 file_arch_masses_field = Masses                       # Name of the dataset that contains the masses of the clouds
 file_arch_pIDs_field = ParticleIDs                    # Name of the dataset that contains the particleIDs of the clouds
 file_arch_pIDgen_field = ParticleIDGenerationNumber   # Field not used currently
-write_filename_base_prefix = Tracked_Clouds_          # Output filename prefix for the file produced by matcher
+write_filename_base_prefix = Matched_Clouds_          # Output filename prefix for the file produced by matcher
 write_filename_base_suffix = .hdf5                    # Output filename suffix for the file produced by matcher
 particle_lower_limit = 32                             # To exclude clouds with less than a certain number of cells/particles 
 ```

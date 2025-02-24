@@ -7,6 +7,9 @@
 #include <vector>
 #include <fstream>
 #include <hdf5.h>
+#include <vector>
+#include <iostream>
+#include <string>
 
 void write_to_hdf5_file(CitySnaps& snapsnap, Params& params, int parent_num_clouds, int child_num_clouds);
 //void write_to_hdf5_file(CitySnaps snapsnap, Params &params, int parent_num_clouds, int child_num_clouds);

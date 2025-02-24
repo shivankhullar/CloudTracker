@@ -60,12 +60,14 @@ endif
 
 #------------------------------------------------------------
 ifeq ($(SYSTYPE),"CITA")
-CXX = h5c++
-#g++
+#CXX = h5c++
+CXX = g++
 CPPFLAGS =
 CXXFLAGS = -std=c++14 -O3 -g -march=native
+HDF5_INC =  
+HDF5_LIB = -L
 LDFLAGS = -g
-LDLIBS = 
+LDLIBS = -lhdf5 -lz
 #-lnetcdf_c++4 -lfftw3
 endif
 #------------------------------------------------------------

@@ -48,7 +48,7 @@ class MemberCloud{
 public:
         std::string name;
         std::vector<double> particleIDs;
-        std::vector<double> particleIDgens;
+        //std::vector<double> particleIDgens;
        	std::vector<double> masses;
 	std::vector<double> dummy_pIDs;
 	std::vector<double> dummy_masses;
@@ -56,7 +56,8 @@ public:
         std::vector<ChildParentInstance> children;
         std::vector<ChildParentInstance> parents;
 	int num_children, num_parents;
-	MemberCloud(std::string name_arg, std::vector<double> pIDs, std::vector<double> pIDgen, std::vector<double> masses_arg);
+	//MemberCloud(std::string name_arg, std::vector<double> pIDs, std::vector<double> pIDgen, std::vector<double> masses_arg);
+	MemberCloud(std::string name_arg, std::vector<double> pIDs, std::vector<double> masses_arg);
 	void add_child(std::string name, double parents_mass_frac_to_child, double childs_mass_frac_from_parent, double total_child_mass);
         void add_parent(std::string name, double parents_mass_frac_to_child, double childs_mass_frac_from_parent, double total_parent_mass);
 };

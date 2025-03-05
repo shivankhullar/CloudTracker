@@ -99,10 +99,14 @@ std::string get_cloud_name(int i, Params &params)
 {
         std::string cloud_name;
         // customize this part below based on how many clouds there are if needed.
-        if (i<10) { cloud_name = params.cloud_prefix + "000"+ std::to_string(i);}
-        else if (i>=10 & i<100) { cloud_name = params.cloud_prefix + "00"+ std::to_string(i);}
-        else if (i>=100 & i<1000) { cloud_name = params.cloud_prefix + "0"+ std::to_string(i);}
-        else { cloud_name = params.cloud_prefix + std::to_string(i);}
+        //if (i<10) { cloud_name = params.cloud_prefix + "000"+ std::to_string(i);}
+        //else if (i>=10 & i<100) { cloud_name = params.cloud_prefix + "00"+ std::to_string(i);}
+        //else if (i>=100 & i<1000) { cloud_name = params.cloud_prefix + "0"+ std::to_string(i);}
+        if (i<10) { cloud_name = params.cloud_prefix + "0"+ std::to_string(i);}
+        //else if (i>=10 & i<100) { cloud_name = params.cloud_prefix + "0"+ std::to_string(i);}
+        //else if (i>=100 & i<1000) { cloud_name = params.cloud_prefix + std::to_string(i);}
+        //else { cloud_name = params.cloud_prefix + std::to_string(i);}
+        else {cloud_name = params.cloud_prefix + std::to_string(i);}
 	// std::cout << "Make sure to modify the get_cloud_name() function correctly." << std::endl;
         return cloud_name;
 }
@@ -125,11 +129,11 @@ void load_clouds_to_group(int snap_num, int num_clouds_snap, Params &params, Cit
 		//print_array_double(masses);
 		std::vector<double> pIDs = read_cloud_data_double(params, snap_num, 
                                                 params.file_arch_pIDs_field, cloud_name);
-                std::vector<double> pIDgen = read_cloud_data_double(params, snap_num, 
-                                                params.file_arch_pIDgen_field, cloud_name);
+                //std::vector<double> pIDgen = read_cloud_data_double(params, snap_num, 
+                //                                params.file_arch_pIDgen_field, cloud_name);
 		
 		
-		MemberCloud snapcloud(cloud_name, pIDs, pIDgen, masses);
+		MemberCloud snapcloud(cloud_name, pIDs, masses);  //pIDgen, masses);
                 if (key.compare("parent")==0) { snapsnap.parent_group.add_member(snapcloud);   //} 
 			std::cout << "Added Cloud" << i << " to parent group" << std::endl;}
                 else if (key.compare("child")==0) { snapsnap.child_group.add_member(snapcloud);
@@ -154,6 +158,7 @@ void matcher(Params &params)
                 CitySnaps snapsnap(i, i+1);
                 int num_clouds_parent_snap = find_num_clouds(i, params);
                 int num_clouds_child_snap = find_num_clouds(i+1, params);
+                std::cout << "Number of clouds in parent and child snaps: " << num_clouds_parent_snap << " " << num_clouds_child_snap << std::endl;
                 load_clouds_to_group(i, num_clouds_parent_snap, params, snapsnap, "parent");
                 load_clouds_to_group(i+1, num_clouds_child_snap, params, snapsnap, "child");
                 for (int j=0; j<num_clouds_parent_snap; j++)

@@ -26,9 +26,33 @@
 //using namespace H5;
 
 /// @brief Compares two particle ID lists and counts the number of matching IDs.
-/// @param a The first list of particle IDs.
-/// @param b The second list of particle IDs.
+/// @param a1 The first particle ID list.
+/// @param b1 The first particle ID generation number list.
+/// @param c1 The first particle ID child number list.
+/// @param a2 The second particle ID list.
+/// @param b2 The second particle ID generation number list.
+/// @param c2 The second particle ID child number list.
 /// @return The number of matching particle IDs.
+int compare_particles(std::vector<double> a1, std::vector<double> b1, std::vector<double> c1, \
+                        std::vector<double> a2, std::vector<double> b2, std::vector<double> c2)
+{
+        int count = 0; // number of common particles
+        //int dups = 0;  // number of duplicate particles, ignored for now
+        for (int i=0; i<a1.size();i++)
+        {
+                for (int j=0; j<a2.size(); j++)
+                {
+                        if ((a1[i] == a2[j]) && (b1[i] == b2[j]) && (c1[i] == c2[j])) 
+                        { 
+                                count = count+1;
+                        }
+                        
+                }
+        }
+        return count;
+}
+
+/*
 int compare_particles(std::vector<double> a, std::vector<double> b)
 {
         int count = 0; // number of common particles
@@ -46,6 +70,8 @@ int compare_particles(std::vector<double> a, std::vector<double> b)
         }
 	return count;
 }
+*/
+
 
 
 /// @brief                              Calculates the mass fraction of particles between two clouds.
@@ -56,9 +82,11 @@ int compare_particles(std::vector<double> a, std::vector<double> b)
 /// @param num_common_particles         The number of particles that are common between the two clouds.
 /// @param childs_mass_frac_from_parent The mass fraction of the child cloud, sourced from the parent cloud.
 /// @param parents_mass_frac_to_child   The mass fraction of the parent cloud, donated to the child cloud.
-void mass_frac(std::vector<double> parent_pIDs, std::vector<double> child_pIDs, std::vector<double> parent_masses, 
-                std::vector<double> child_masses, int num_common_particles, double &childs_mass_frac_from_parent, 
-                double &parents_mass_frac_to_child)
+void mass_frac(std::vector<double> parent_pIDs, std::vector<double> child_pIDs, \
+                std::vector<double> parent_pIDgens, std::vector<double> child_pIDgens, \
+                std::vector<double> parent_pIDchilds, std::vector<double> child_pIDchilds, \
+                std::vector<double> parent_masses, std::vector<double> child_masses, \
+                int num_common_particles, double &childs_mass_frac_from_parent, double &parents_mass_frac_to_child)
 {
         int count = 0;
         std::vector<double> store_parent_masses(num_common_particles);
@@ -67,7 +95,8 @@ void mass_frac(std::vector<double> parent_pIDs, std::vector<double> child_pIDs, 
         {
                 for (int j=0; j<child_pIDs.size(); j++)
                 {
-                        if (parent_pIDs[i] == child_pIDs[j]) {
+                        if ((parent_pIDs[i] == child_pIDs[j]) && (parent_pIDgens[i] == child_pIDgens[j]) && (parent_pIDchilds[i] == child_pIDchilds[j]))
+                        {
                                 store_parent_masses[count] = parent_masses[i];
                                 store_child_masses[count] = child_masses[j];
                                 count++;
@@ -99,10 +128,10 @@ std::string get_cloud_name(int i, Params &params)
 {
         std::string cloud_name;
         // customize this part below based on how many clouds there are if needed.
-        //if (i<10) { cloud_name = params.cloud_prefix + "000"+ std::to_string(i);}
-        //else if (i>=10 & i<100) { cloud_name = params.cloud_prefix + "00"+ std::to_string(i);}
-        //else if (i>=100 & i<1000) { cloud_name = params.cloud_prefix + "0"+ std::to_string(i);}
-        if (i<10) { cloud_name = params.cloud_prefix + "0"+ std::to_string(i);}
+        if (i<10) { cloud_name = params.cloud_prefix + "000"+ std::to_string(i);}
+        else if (i>=10 & i<100) { cloud_name = params.cloud_prefix + "00"+ std::to_string(i);}
+        else if (i>=100 & i<1000) { cloud_name = params.cloud_prefix + "0"+ std::to_string(i);}
+        //if (i<10) { cloud_name = params.cloud_prefix + "0"+ std::to_string(i);}
         //else if (i>=10 & i<100) { cloud_name = params.cloud_prefix + "0"+ std::to_string(i);}
         //else if (i>=100 & i<1000) { cloud_name = params.cloud_prefix + std::to_string(i);}
         //else { cloud_name = params.cloud_prefix + std::to_string(i);}
@@ -129,11 +158,13 @@ void load_clouds_to_group(int snap_num, int num_clouds_snap, Params &params, Cit
 		//print_array_double(masses);
 		std::vector<double> pIDs = read_cloud_data_double(params, snap_num, 
                                                 params.file_arch_pIDs_field, cloud_name);
-                //std::vector<double> pIDgen = read_cloud_data_double(params, snap_num, 
-                //                                params.file_arch_pIDgen_field, cloud_name);
+                std::vector<double> pIDgen = read_cloud_data_double(params, snap_num, 
+                                                params.file_arch_pIDgen_field, cloud_name);
+                std::vector<double> pIDchild = read_cloud_data_double(params, snap_num, 
+                                                params.file_arch_pIDchild_field, cloud_name);
 		
 		
-		MemberCloud snapcloud(cloud_name, pIDs, masses);  //pIDgen, masses);
+		MemberCloud snapcloud(cloud_name, pIDs, pIDgen, pIDchild, masses);
                 if (key.compare("parent")==0) { snapsnap.parent_group.add_member(snapcloud);   //} 
 			std::cout << "Added Cloud" << i << " to parent group" << std::endl;}
                 else if (key.compare("child")==0) { snapsnap.child_group.add_member(snapcloud);
@@ -173,14 +204,18 @@ void matcher(Params &params)
 					snapsnap.child_group.members[k].particleIDs.size()<=params.particle_lower_limit) {continue;}
 
                                 //std::cout << "Comparing clouds " << snapsnap.parent_group.members[j].name << " and " << snapsnap.child_group.members[k].name << std::endl;
-				int num_common_particles = compare_particles(snapsnap.parent_group.members[j].particleIDs, 
-					snapsnap.child_group.members[k].particleIDs);
+				int num_common_particles = compare_particles(snapsnap.parent_group.members[j].particleIDs, snapsnap.child_group.members[k].particleIDs,
+                                        snapsnap.parent_group.members[j].particleIDgens, snapsnap.child_group.members[k].particleIDgens,
+                                        snapsnap.parent_group.members[j].particleIDchilds, snapsnap.child_group.members[k].particleIDchilds);
+
                                 
 				if (num_common_particles == 0) {continue;}           // no particles match
                                 else {
                                         //Find child_mass_from_parent and parent_mass_to_child.
 					double childs_mass_frac_from_parent, parents_mass_frac_to_child;
                                         mass_frac(snapsnap.parent_group.members[j].particleIDs, snapsnap.child_group.members[k].particleIDs,
+                                                snapsnap.parent_group.members[j].particleIDgens, snapsnap.child_group.members[k].particleIDgens,
+                                                snapsnap.parent_group.members[j].particleIDchilds, snapsnap.child_group.members[k].particleIDchilds,
 						snapsnap.parent_group.members[j].masses, snapsnap.child_group.members[k].masses,
 						num_common_particles, childs_mass_frac_from_parent, parents_mass_frac_to_child);
 					

@@ -31,7 +31,7 @@ struct Params{
         int last_snap, first_snap;
         std::string cloud_prefix, path, filename_base_prefix, filename_base_suffix, dat_filename_base_prefix, dat_filename_base_suffix;
 	std::string write_filename_base_prefix, write_filename_base_suffix;
-	std::string file_arch_root, file_arch_cloud_subgroup, file_arch_masses_field, file_arch_pIDs_field, file_arch_pIDgen_field; 
+	std::string file_arch_root, file_arch_cloud_subgroup, file_arch_masses_field, file_arch_pIDs_field, file_arch_pIDgen_field, file_arch_pIDchild_field; 
 	int particle_lower_limit;
 };
 
@@ -48,7 +48,8 @@ class MemberCloud{
 public:
         std::string name;
         std::vector<double> particleIDs;
-        //std::vector<double> particleIDgens;
+        std::vector<double> particleIDgens;
+        std::vector<double> particleIDchilds;
        	std::vector<double> masses;
 	std::vector<double> dummy_pIDs;
 	std::vector<double> dummy_masses;
@@ -56,8 +57,8 @@ public:
         std::vector<ChildParentInstance> children;
         std::vector<ChildParentInstance> parents;
 	int num_children, num_parents;
-	//MemberCloud(std::string name_arg, std::vector<double> pIDs, std::vector<double> pIDgen, std::vector<double> masses_arg);
-	MemberCloud(std::string name_arg, std::vector<double> pIDs, std::vector<double> masses_arg);
+	MemberCloud(std::string name_arg, std::vector<double> pIDs, std::vector<double> pIDgen, std::vector<double> pIDchild, std::vector<double> masses_arg);
+	//MemberCloud(std::string name_arg, std::vector<double> pIDs, std::vector<double> masses_arg);
 	void add_child(std::string name, double parents_mass_frac_to_child, double childs_mass_frac_from_parent, double total_child_mass);
         void add_parent(std::string name, double parents_mass_frac_to_child, double childs_mass_frac_from_parent, double total_parent_mass);
 };

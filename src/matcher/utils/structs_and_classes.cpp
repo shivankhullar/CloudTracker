@@ -51,10 +51,13 @@ ChildParentInstance::ChildParentInstance(std::string name_arg, double parents_ma
 /// @brief      This is a class to create a member cloud
 /// @param      name_arg: The name of the member cloud
 /// @param      pIDs: The particle IDs of the member cloud
+/// @param      pIDgen: The particle ID generator of the member cloud
+/// @param      pIDchild: The particle ID child of the member cloud
 /// @param      masses_arg: The masses of the member cloud
 /// @return
 //std::vector<double> pIDgen, 
-MemberCloud::MemberCloud(std::string name_arg, std::vector<double> pIDs, std::vector<double> masses_arg)
+MemberCloud::MemberCloud(std::string name_arg, std::vector<double> pIDs, std::vector<double> pIDgen, \
+                                        std::vector<double> pIDchild,  std::vector<double> masses_arg)
 {
     // Initialize the member cloud
     name = name_arg;
@@ -62,27 +65,25 @@ MemberCloud::MemberCloud(std::string name_arg, std::vector<double> pIDs, std::ve
     num_parents = 0;
     for (int i=0; i<pIDs.size(); i++)
     {
-        if (check_if_value_exists_in_array(particleIDs, pIDs[i])==0)
-        {
-            //if (check_if_value_exists_in_array(particleIDgens, pIDgen[i])==0)
-            //{
-            //    particleIDs.push_back(pIDs[i]);
-            //    masses.push_back(masses_arg[i]);
-            //}
+        particleIDs.push_back(pIDs[i]);
+        particleIDgens.push_back(pIDgen[i]);
+        particleIDchilds.push_back(pIDchild[i]);
+        masses.push_back(masses_arg[i]);
+    }
             //else
             //{
-            //    int index = get_first_index(particleIDs, pIDs[i]);
+            //    int index = get_first_index(particleIDs, pIDs[i]);  
             //    masses[index] = masses[index] + masses_arg[i];
             //}
-            particleIDs.push_back(pIDs[i]);
-            masses.push_back(masses_arg[i]);
-        }
+            //particleIDs.push_back(pIDs[i]);
+            //masses.push_back(masses_arg[i]);
+        //}
         //comment this out if using pIDgen
-        else {
-            int index = get_first_index(particleIDs, pIDs[i]);
-            masses[index] = masses[index] + masses_arg[i];
-        }
-    }
+        //else {
+        //    int index = get_first_index(particleIDs, pIDs[i]);
+        //    masses[index] = masses[index] + masses_arg[i];
+        //}
+    //}
     total_mass = sum_array(masses);
 }
 

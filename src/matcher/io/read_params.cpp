@@ -87,6 +87,7 @@ bool parseParams(const std::string& filename, Params& params, const std::string&
             else if (key == "file_arch_masses_field") params.file_arch_masses_field = value;
             else if (key == "file_arch_pIDs_field") params.file_arch_pIDs_field = value;
             else if (key == "file_arch_pIDgen_field") params.file_arch_pIDgen_field = value;
+            else if (key == "file_arch_pIDchild_field") params.file_arch_pIDchild_field = value;
             else if (key == "write_filename_base_prefix") params.write_filename_base_prefix = value;
             else if (key == "write_filename_base_suffix") params.write_filename_base_suffix = "_"+name+value;
             else if (key == "particle_lower_limit") params.particle_lower_limit = std::stoi(value);

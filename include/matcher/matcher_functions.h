@@ -18,7 +18,9 @@
 //std::vector<int> read_cloud_data_int(Params &params, int snap_num, std::string field_to_read, std::string cloud_name);
 //std::vector<double> read_cloud_data_double(Params &params, int snap_num, std::string field_to_read, std::string cloud_name);
 //double sum_array(std::vector<double> a);
-int compare_particles(std::vector<int> a, std::vector<int> b);
+//int compare_particles(std::vector<int> a, std::vector<int> b);
+int compare_particles(std::vector<int> parent_pIDs, std::vector<int> child_pIDs, std::vector<int> parent_pIDgens, std::vector<int> child_pIDgens,
+			std::vector<int> parent_pIDchilds, std::vector<int> child_pIDchilds);
 double mass_frac(std::vector<int> parent_pIDs, std::vector<int> child_pIDs, std::vector<double> parent_masses, std::vector<double> child_masses,
          		int num_common_particles);
 std::string get_cloud_name(int i, Params &params);

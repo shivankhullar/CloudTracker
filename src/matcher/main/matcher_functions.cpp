@@ -33,6 +33,8 @@
 /// @param b2 The second particle ID generation number list.
 /// @param c2 The second particle ID child number list.
 /// @return The number of matching particle IDs.
+
+
 int compare_particles(std::vector<double> a1, std::vector<double> b1, std::vector<double> c1, \
                         std::vector<double> a2, std::vector<double> b2, std::vector<double> c2)
 {
@@ -204,14 +206,22 @@ void matcher(Params &params)
 					snapsnap.child_group.members[k].particleIDs.size()<=params.particle_lower_limit) {continue;}
 
                                 //std::cout << "Comparing clouds " << snapsnap.parent_group.members[j].name << " and " << snapsnap.child_group.members[k].name << std::endl;
-				int num_common_particles = compare_particles(snapsnap.parent_group.members[j].particleIDs, snapsnap.child_group.members[k].particleIDs,
-                                        snapsnap.parent_group.members[j].particleIDgens, snapsnap.child_group.members[k].particleIDgens,
-                                        snapsnap.parent_group.members[j].particleIDchilds, snapsnap.child_group.members[k].particleIDchilds);
+				//int num_common_particles = compare_particles(snapsnap.parent_group.members[j].particleIDs, snapsnap.child_group.members[k].particleIDs);
 
                                 
-				if (num_common_particles == 0) {continue;}           // no particles match
+                                int num_common_particles = compare_particles(snapsnap.parent_group.members[j].particleIDs, snapsnap.parent_group.members[j].particleIDgens,
+                                        snapsnap.parent_group.members[j].particleIDchilds, snapsnap.child_group.members[k].particleIDs, 
+                                        snapsnap.child_group.members[k].particleIDgens, snapsnap.child_group.members[k].particleIDchilds);
+                                
+
+
+                                
+				if (num_common_particles == 0) {
+                                        //std::cout << "No particles match between cloud " << j << " and " << k << std::endl;
+                                        continue;}           // no particles match
                                 else {
                                         //Find child_mass_from_parent and parent_mass_to_child.
+                                        //std::cout << "Particles matching: " << num_common_particles << " between cloud "<< j << " and " << k <<std::endl;
 					double childs_mass_frac_from_parent, parents_mass_frac_to_child;
                                         mass_frac(snapsnap.parent_group.members[j].particleIDs, snapsnap.child_group.members[k].particleIDs,
                                                 snapsnap.parent_group.members[j].particleIDgens, snapsnap.child_group.members[k].particleIDgens,

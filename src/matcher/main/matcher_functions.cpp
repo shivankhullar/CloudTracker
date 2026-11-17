@@ -42,7 +42,10 @@ int compare_particles(std::vector<double> a1, std::vector<double> b1, std::vecto
         {
                 for (int j=0; j<a2.size(); j++)
                 {
-                        if ((a1[i] == a2[j]) && (b1[i] == b2[j]) && (c1[i] == c2[j])) 
+                        // unique key is (ParticleIDs, ParticleChildIDsNumber); the generation number (b) is NOT
+                        // compared: GIZMO increments it on a cell that splits or spawns a star while the cell keeps
+                        // its ID and child number (merge_split.cc, sfr_eff.cc)
+                        if ((a1[i] == a2[j]) && (c1[i] == c2[j]))
                         { 
                                 count = count+1;
                         }
@@ -95,7 +98,7 @@ void mass_frac(std::vector<double> parent_pIDs, std::vector<double> child_pIDs, 
         {
                 for (int j=0; j<child_pIDs.size(); j++)
                 {
-                        if ((parent_pIDs[i] == child_pIDs[j]) && (parent_pIDgens[i] == child_pIDgens[j]) && (parent_pIDchilds[i] == child_pIDchilds[j]))
+                        if ((parent_pIDs[i] == child_pIDs[j]) && (parent_pIDchilds[i] == child_pIDchilds[j]))   // (ID, child) only, as in compare_particles
                         {
                                 store_parent_masses[count] = parent_masses[i];
                                 store_child_masses[count] = child_masses[j];
@@ -204,9 +207,11 @@ void matcher(Params &params)
 					snapsnap.child_group.members[k].particleIDs.size()<=params.particle_lower_limit) {continue;}
 
                                 //std::cout << "Comparing clouds " << snapsnap.parent_group.members[j].name << " and " << snapsnap.child_group.members[k].name << std::endl;
-				int num_common_particles = compare_particles(snapsnap.parent_group.members[j].particleIDs, snapsnap.child_group.members[k].particleIDs,
-                                        snapsnap.parent_group.members[j].particleIDgens, snapsnap.child_group.members[k].particleIDgens,
-                                        snapsnap.parent_group.members[j].particleIDchilds, snapsnap.child_group.members[k].particleIDchilds);
+				// compare_particles takes (parent ID, gen, child, child-cloud ID, gen, child); the interleaved
+				// order mass_frac() uses compared parent IDs with child-cloud generation numbers, so nothing matched
+				int num_common_particles = compare_particles(snapsnap.parent_group.members[j].particleIDs, snapsnap.parent_group.members[j].particleIDgens,
+                                        snapsnap.parent_group.members[j].particleIDchilds, snapsnap.child_group.members[k].particleIDs,
+                                        snapsnap.child_group.members[k].particleIDgens, snapsnap.child_group.members[k].particleIDchilds);
 
                                 
 				if (num_common_particles == 0) {continue;}           // no particles match
